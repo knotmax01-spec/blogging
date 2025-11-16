@@ -128,16 +128,25 @@ function BlogEditor() {
       const readingTime = Math.ceil(wordCount / wordsPerMinute);
 
       const posts = JSON.parse(localStorage.getItem('blog-posts') || '[]');
-      // Replace image IDs with actual base64 data in content
-      let finalContent = content;
+
+      // Store images separately to avoid localStorage size issues
+      const imageMap = {};
       images.forEach(img => {
-        finalContent = finalContent.replace(img.id, img.data);
+        imageMap[img.id] = img.data;
       });
+
+      // Store images in localStorage
+      if (images.length > 0) {
+        const allImages = JSON.parse(localStorage.getItem('blog-images') || '{}');
+        const postId = isEditing ? Number(id) : Date.now();
+        allImages[postId] = imageMap;
+        localStorage.setItem('blog-images', JSON.stringify(allImages));
+      }
 
       const post = {
         id: isEditing ? Number(id) : Date.now(),
         title,
-        content: finalContent,
+        content: content,
         metaDescription: autoMetaDescription,
         keywords,
         author,
@@ -149,6 +158,7 @@ function BlogEditor() {
         wordCount,
         readingTime,
         layout,
+        imageIds: Object.keys(imageMap),
         date: isEditing ? posts.find(p => p.id === Number(id)).date : new Date().toISOString(),
         lastModified: new Date().toISOString()
       };
