@@ -168,9 +168,17 @@ function BlogDetail() {
         <div className="prose prose-lg max-w-none">
           <ReactMarkdown
             components={{
-              img: ({node, ...props}) => (
-                <img {...props} className="max-w-full h-auto rounded-lg shadow-md" />
-              )
+              img: ({src, alt, ...props}) => {
+                const imageSrc = postImages[src] || src;
+                return (
+                  <img
+                    src={imageSrc}
+                    alt={alt}
+                    {...props}
+                    className="max-w-full h-auto rounded-lg shadow-md"
+                  />
+                );
+              }
             }}
           >
             {post.content}
