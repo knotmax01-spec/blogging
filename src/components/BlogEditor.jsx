@@ -230,6 +230,16 @@ function BlogEditor() {
         "inLanguage": "en-US"
       };
 
+      // Create content with embedded images for HTML export
+      let contentWithImages = content;
+      images.forEach(img => {
+        // Replace image markdown syntax with the base64 data
+        contentWithImages = contentWithImages.replace(
+          new RegExp(`!\\[([^\\]]*)]\\(${img.id}\\)`, 'g'),
+          `![${img.name}](${img.data})`
+        );
+      });
+
       const htmlContent = `
         <!DOCTYPE html>
         <html>
