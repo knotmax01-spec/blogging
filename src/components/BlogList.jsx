@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { generateBlogLibraryHTML } from '../utils/blogLibraryGenerator';
+import { downloadBlogAsHTML } from '../utils/staticSiteExporter';
 
 function BlogList() {
   const [posts, setPosts] = useState([]);
