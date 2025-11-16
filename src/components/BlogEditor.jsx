@@ -620,12 +620,24 @@ function BlogEditor() {
     <div className="grid grid-cols-2 gap-8">
       <div className="space-y-4">
         <h1 className="text-2xl font-bold">{isEditing ? 'Edit Post' : 'Create New Post'}</h1>
-        <input
-          type="text"
-          placeholder="Post Title"
-          className="w-full p-2 border rounded"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
+        <div>
+          <input
+            type="text"
+            placeholder="Post Title"
+            className={`w-full p-2 border rounded ${validationErrors.title ? 'border-red-500' : ''}`}
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            aria-label="Post title"
+            aria-invalid={!!validationErrors.title}
+            aria-describedby={validationErrors.title ? 'title-error' : undefined}
+            maxLength="200"
+          />
+          {validationErrors.title && (
+            <p id="title-error" className="text-red-600 text-sm mt-1" role="alert">
+              {validationErrors.title}
+            </p>
+          )}
+        </div>
         />
         
         <div
@@ -636,11 +648,14 @@ function BlogEditor() {
           className={`border-2 border-dashed rounded p-4 transition-colors ${
             isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300'
           }`}
+          role="region"
+          aria-label="Image upload area"
         >
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="image-upload" className="block text-sm font-medium text-gray-700 mb-2">
             Upload Images (Drag & Drop or Click)
           </label>
           <input
+            id="image-upload"
             type="file"
             accept="image/*"
             multiple
@@ -651,6 +666,7 @@ function BlogEditor() {
               file:text-sm file:font-semibold
               file:bg-blue-50 file:text-blue-700
               hover:file:bg-blue-100"
+            aria-label="File upload for images"
           />
           <p className="text-sm text-gray-500 mt-1">
             {isDragging ? 'Drop images here!' : 'Drag images here or click to upload'}
@@ -658,11 +674,13 @@ function BlogEditor() {
         </div>
 
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">Layout Style</label>
+          <label htmlFor="layout-select" className="block text-sm font-medium text-gray-700">Layout Style</label>
           <select
+            id="layout-select"
             value={layout}
             onChange={(e) => setLayout(e.target.value)}
             className="w-full p-2 border rounded"
+            aria-label="Blog layout style"
           >
             <option value="default">Default</option>
             <option value="centered">Centered</option>
@@ -677,6 +695,11 @@ function BlogEditor() {
             content={content}
             onChange={setContent}
           />
+          {validationErrors.content && (
+            <p className="text-red-600 text-sm mt-1" role="alert">
+              {validationErrors.content}
+            </p>
+          )}
         </div>
         
         {/* SEO Section */}
@@ -790,9 +813,15 @@ function BlogEditor() {
         <div className="space-y-2">
           <button
             onClick={handleSave}
-            className="w-full bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 font-semibold"
+            disabled={isSubmitting}
+            className={`w-full px-4 py-2 rounded font-semibold transition ${
+              isSubmitting
+                ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
+                : 'bg-green-500 text-white hover:bg-green-600'
+            }`}
+            aria-label={isEditing ? 'Update and generate HTML' : 'Publish and generate HTML'}
           >
-            {isEditing ? 'Update & Generate HTML' : 'Publish & Generate HTML'}
+            {isSubmitting ? 'Publishing...' : (isEditing ? 'Update & Generate HTML' : 'Publish & Generate HTML')}
           </button>
           <button
             onClick={() => setShowPublishOptions(!showPublishOptions)}
