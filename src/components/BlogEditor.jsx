@@ -352,7 +352,7 @@ function BlogEditor() {
                 
                 <!-- Article Content -->
                 <div class="prose prose-lg max-w-none">
-                  ${finalContent}
+                  ${contentWithImages}
                 </div>
                 
                 <!-- Article Footer -->
