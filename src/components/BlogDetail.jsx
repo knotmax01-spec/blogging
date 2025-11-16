@@ -10,6 +10,7 @@ function BlogDetail() {
   const [newComment, setNewComment] = useState('');
   const [rating, setRating] = useState(0);
   const [userName, setUserName] = useState('');
+  const [postImages, setPostImages] = useState({});
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -17,6 +18,11 @@ function BlogDetail() {
     const posts = JSON.parse(localStorage.getItem('blog-posts') || '[]');
     const foundPost = posts.find(p => p.id === Number(id));
     setPost(foundPost);
+
+    // Load images for this post
+    const allImages = JSON.parse(localStorage.getItem('blog-images') || '{}');
+    const images = allImages[Number(id)] || {};
+    setPostImages(images);
 
     // Load comments
     const allComments = JSON.parse(localStorage.getItem('blog-comments') || '{}');
