@@ -3,6 +3,7 @@ import BlogEditor from './components/BlogEditor';
 import BlogList from './components/BlogList';
 import BlogDetail from './components/BlogDetail';
 import BlogLibrary from './components/BlogLibrary';
+import ErrorBoundary from './components/ErrorBoundary';
 
 function AppContent() {
   const location = useLocation();
@@ -48,9 +49,11 @@ function AppContent() {
 
 function App() {
   return (
-    <BrowserRouter>
-      <AppContent />
-    </BrowserRouter>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <AppContent />
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 }
 
