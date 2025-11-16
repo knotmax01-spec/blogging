@@ -530,7 +530,13 @@ function BlogEditor() {
 
       addBlogToManifest(post);
 
-      const blob = new Blob([htmlContent], { type: 'text/html' });
+      // Replace image IDs with base64 data for HTML export
+      let htmlForExport = htmlContent;
+      images.forEach(img => {
+        htmlForExport = htmlForExport.replace(new RegExp(`!\\[([^\\]]*)]\\(${img.id}\\)`, 'g'), `![${img.name}](${img.data})`);
+      });
+
+      const blob = new Blob([htmlForExport], { type: 'text/html' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
