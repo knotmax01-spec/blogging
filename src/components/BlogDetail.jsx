@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { removeBlogFromManifest } from '../utils/blogManifest';
+import { downloadBlogAsHTML } from '../utils/staticSiteExporter';
 
 function BlogDetail() {
   const [post, setPost] = useState(null);
@@ -111,7 +112,13 @@ function BlogDetail() {
           <span>←</span>
           <span>Back to Dashboard</span>
         </Link>
-        <div className="space-x-3">
+        <div className="space-x-3 flex flex-wrap gap-2">
+          <button
+            onClick={() => downloadBlogAsHTML(post)}
+            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 font-semibold transition"
+          >
+            📥 Download HTML
+          </button>
           <button
             onClick={handleEdit}
             className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 font-semibold transition"
