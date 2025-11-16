@@ -112,7 +112,33 @@ function BlogEditor() {
     await processFiles(Array.from(e.dataTransfer.files));
   }, []);
 
-  const handleSave = async () => {
+  const validateForm = useCallback(() => {
+    const fieldValidations = {
+      title: validateTitle(title),
+      content: validateContent(content),
+      metaDescription: validateMetaDescription(metaDescription),
+      canonicalUrl: validateUrl(canonicalUrl),
+      featuredImage: validateUrl(featuredImage)
+    };
+
+    const errors = {};
+    Object.entries(fieldValidations).forEach(([field, validation]) => {
+      if (!validation.isValid) {
+        errors[field] = validation.error;
+      }
+    });
+
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  }, [title, content, metaDescription, canonicalUrl, featuredImage]);
+
+  const handleSave = useCallback(async () => {
+    if (!validateForm()) {
+      alert('Please fix the validation errors below');
+      return;
+    }
+
+    setIsSubmitting(true);
     try {
       // Generate SEO-friendly slug
       const slug = title.toLowerCase()
@@ -557,11 +583,13 @@ function BlogEditor() {
       setIsSubmitting(false);
       navigate('/');
     } catch (error) {
+      console.error('Error saving post:', error);
+      setIsSubmitting(false);
       alert('Error saving post: ' + error.message);
     }
-  };
+  }, [isEditing, id, title, content, metaDescription, keywords, author, category, tags, featuredImage, canonicalUrl, images, layout, navigate, validateForm]);
 
-  const getPreviewClasses = () => {
+  const getPreviewClasses = useCallback(() => {
     switch (layout) {
       case 'centered':
         return 'max-w-2xl mx-auto';
@@ -572,21 +600,21 @@ function BlogEditor() {
       default:
         return 'max-w-4xl mx-auto';
     }
-  };
+  }, [layout]);
 
   // Custom components for ReactMarkdown to handle image preview
-  const components = {
+  const components = useMemo(() => ({
     img: ({src, alt}) => {
       const image = images.find(img => img.id === src);
       return (
-        <img 
-          src={image ? image.data : src} 
-          alt={alt} 
+        <img
+          src={image ? image.data : src}
+          alt={alt}
           className="max-w-full h-auto rounded-lg"
         />
       );
     }
-  };
+  }), [images]);
 
   return (
     <div className="grid grid-cols-2 gap-8">
