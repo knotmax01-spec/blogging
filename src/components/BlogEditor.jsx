@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import RichTextEditor from './RichTextEditor';
+import { addBlogToManifest, removeBlogFromManifest } from '../utils/blogManifest';
+import { generateBlogLibraryHTML, exportBlogLibraryAsFile } from '../utils/blogLibraryGenerator';
 
 function BlogEditor() {
   const [title, setTitle] = useState('');
@@ -16,6 +18,7 @@ function BlogEditor() {
   const [images, setImages] = useState([]);
   const [layout, setLayout] = useState('default');
   const [isDragging, setIsDragging] = useState(false);
+  const [showPublishOptions, setShowPublishOptions] = useState(false);
   const dropZoneRef = useRef(null);
   const navigate = useNavigate();
   const { id } = useParams();
@@ -515,16 +518,19 @@ function BlogEditor() {
         </html>
       `;
 
+      addBlogToManifest(post);
+
       const blob = new Blob([htmlContent], { type: 'text/html' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `${title.toLowerCase().replace(/\s+/g, '-')}.html`;
+      a.download = `${post.slug}.html`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
+      alert(`Blog ${isEditing ? 'updated' : 'published'} successfully! HTML file downloaded.`);
       navigate('/');
     } catch (error) {
       alert('Error saving post: ' + error.message);
@@ -729,12 +735,69 @@ function BlogEditor() {
           </div>
         </div>
         
-        <button
-          onClick={handleSave}
-          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-        >
-          {isEditing ? 'Update & Generate HTML' : 'Save & Generate HTML'}
-        </button>
+        <div className="space-y-2">
+          <button
+            onClick={handleSave}
+            className="w-full bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 font-semibold"
+          >
+            {isEditing ? 'Update & Generate HTML' : 'Publish & Generate HTML'}
+          </button>
+          <button
+            onClick={() => setShowPublishOptions(!showPublishOptions)}
+            className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 font-semibold"
+          >
+            {showPublishOptions ? 'Hide' : 'Show'} Publish Options
+          </button>
+        </div>
+
+        {showPublishOptions && (
+          <div className="bg-blue-50 p-4 rounded-lg space-y-3 border border-blue-200">
+            <h3 className="font-semibold text-blue-900">Publish Options</h3>
+            <button
+              onClick={() => {
+                const posts = JSON.parse(localStorage.getItem('blog-posts') || '[]');
+                const libraryHTML = generateBlogLibraryHTML(posts);
+                const blob = new Blob([libraryHTML], { type: 'text/html' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'blog-library.html';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+              }}
+              className="w-full bg-purple-500 text-white px-3 py-2 rounded hover:bg-purple-600 text-sm"
+            >
+              📚 Export Blog Library (All Posts Index)
+            </button>
+            <button
+              onClick={() => {
+                const posts = JSON.parse(localStorage.getItem('blog-posts') || '[]');
+                const postsWithHtml = posts.map(p => ({
+                  ...p,
+                  fileName: `${p.slug}.html`
+                }));
+                const zip = { posts: postsWithHtml, totalPosts: posts.length, exportedAt: new Date().toISOString() };
+                const blob = new Blob([JSON.stringify(zip, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'blog-manifest.json';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+              }}
+              className="w-full bg-indigo-500 text-white px-3 py-2 rounded hover:bg-indigo-600 text-sm"
+            >
+              📋 Export Blog Manifest (JSON)
+            </button>
+            <p className="text-xs text-gray-600 mt-2">
+              💡 Tip: Export the Blog Library to get an index page listing all your blogs. Download individual blog HTML files from the preview.
+            </p>
+          </div>
+        )}
       </div>
       
       <div className="border rounded p-4 bg-white">
