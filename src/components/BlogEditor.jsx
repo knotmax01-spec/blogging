@@ -1,9 +1,10 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import RichTextEditor from './RichTextEditor';
 import { addBlogToManifest, removeBlogFromManifest } from '../utils/blogManifest';
 import { generateBlogLibraryHTML, exportBlogLibraryAsFile } from '../utils/blogLibraryGenerator';
+import { validatePostData, validateTitle, validateContent, validateMetaDescription, validateUrl } from '../utils/validation';
 
 function BlogEditor() {
   const [title, setTitle] = useState('');
@@ -19,6 +20,8 @@ function BlogEditor() {
   const [layout, setLayout] = useState('default');
   const [isDragging, setIsDragging] = useState(false);
   const [showPublishOptions, setShowPublishOptions] = useState(false);
+  const [validationErrors, setValidationErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const dropZoneRef = useRef(null);
   const navigate = useNavigate();
   const { id } = useParams();
@@ -89,25 +92,25 @@ function BlogEditor() {
     }
   };
 
-  const handleImageUpload = async (e) => {
+  const handleImageUpload = useCallback(async (e) => {
     await processFiles(Array.from(e.target.files));
-  };
+  }, []);
 
-  const handleDragOver = (e) => {
+  const handleDragOver = useCallback((e) => {
     e.preventDefault();
     setIsDragging(true);
-  };
+  }, []);
 
-  const handleDragLeave = (e) => {
+  const handleDragLeave = useCallback((e) => {
     e.preventDefault();
     setIsDragging(false);
-  };
+  }, []);
 
-  const handleDrop = async (e) => {
+  const handleDrop = useCallback(async (e) => {
     e.preventDefault();
     setIsDragging(false);
     await processFiles(Array.from(e.dataTransfer.files));
-  };
+  }, []);
 
   const handleSave = async () => {
     try {
@@ -551,6 +554,7 @@ function BlogEditor() {
       URL.revokeObjectURL(url);
 
       alert(`Blog ${isEditing ? 'updated' : 'published'} successfully! HTML file downloaded.`);
+      setIsSubmitting(false);
       navigate('/');
     } catch (error) {
       alert('Error saving post: ' + error.message);
