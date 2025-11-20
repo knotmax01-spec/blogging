@@ -259,13 +259,15 @@ function BlogEditor() {
         "inLanguage": "en-US"
       };
 
-      // Create content with embedded images for HTML export
+      // Create content with proper image paths for HTML export
       let contentWithImages = content;
       images.forEach(img => {
-        // Replace image markdown syntax with the base64 data
+        // Keep image IDs in the markdown for now
+        // They'll be converted to proper paths when viewing
+        const imagePath = `/blog-images/inline/${img.filename}`;
         contentWithImages = contentWithImages.replace(
           new RegExp(`!\\[([^\\]]*)]\\(${img.id}\\)`, 'g'),
-          `![${img.name}](${img.data})`
+          `![${img.originalName}](${imagePath})`
         );
       });
 
