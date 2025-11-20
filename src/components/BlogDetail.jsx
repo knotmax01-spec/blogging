@@ -21,9 +21,16 @@ function BlogDetail() {
     const foundPost = posts.find(p => p.id === Number(id));
     setPost(foundPost);
 
-    // Load images for this post
-    const allImages = JSON.parse(localStorage.getItem('blog-images') || '{}');
-    const images = allImages[Number(id)] || {};
+    // Load images for this post using new imageManager
+    const imageMetadata = getImageMetadata(Number(id)) || [];
+    const images = {};
+    imageMetadata.forEach(img => {
+      const dataUrl = getImageData(img.id);
+      images[img.id] = {
+        ...img,
+        dataUrl
+      };
+    });
     setPostImages(images);
 
     // Load comments
