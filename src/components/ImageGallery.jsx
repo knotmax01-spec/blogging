@@ -1,4 +1,4 @@
-import { useState } useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { Trash2, Copy, ZoomIn } from 'lucide-react';
 import { deleteImageMetadata, formatFileSize } from '../utils/imageManager';
 
