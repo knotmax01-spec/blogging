@@ -48,48 +48,51 @@ function BlogEditor() {
     }
   }, [id, isEditing]);
 
-  const compressImage = (base64String, maxWidth = 800) => {
-    return new Promise((resolve) => {
-      const img = new Image();
-      img.src = base64String;
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        
-        let width = img.width;
-        let height = img.height;
-        
-        if (width > maxWidth) {
-          height = Math.round((height * maxWidth) / width);
-          width = maxWidth;
-        }
-        
-        canvas.width = width;
-        canvas.height = height;
-        
-        ctx.drawImage(img, 0, 0, width, height);
-        resolve(canvas.toDataURL('image/jpeg', 0.7));
-      };
-    });
-  };
-
   const processFiles = async (files) => {
+    const postId = isEditing ? Number(id) : Date.now();
+
     for (const file of files) {
-      if (file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onloadend = async () => {
-          try {
-            const compressedImage = await compressImage(reader.result);
-            const imageId = Date.now().toString();
-            const newImage = { id: imageId, name: file.name, data: compressedImage };
-            setImages(prev => [...prev, newImage]);
-            setContent(prev => `${prev}\n![${file.name}](${imageId})`);
-          } catch (error) {
-            console.error('Error processing image:', error);
-            alert('Error processing image. Please try a smaller image.');
-          }
-        };
-        reader.readAsDataURL(file);
+      // Validate file before processing
+      const validation = validateImageFile(file);
+      if (!validation.isValid) {
+        alert(`Error with ${file.name}:\n${validation.errors.join('\n')}`);
+        continue;
+      }
+
+      try {
+        // Compress the image
+        const compressed = await compressImage(file, 1200, 0.8);
+
+        // Generate unique filename and ID
+        const imageId = Date.now().toString() + Math.random().toString(36).substring(7);
+        const filename = generateImageFilename(file);
+
+        // Create metadata
+        const metadata = createImageMetadata({
+          id: imageId,
+          filename,
+          originalName: file.name,
+          size: compressed.blob.size,
+          width: compressed.width,
+          height: compressed.height,
+          dataUrl: compressed.dataUrl,
+          alt: file.name
+        });
+
+        // Save image data
+        saveImageData(imageId, compressed.dataUrl);
+        saveImageMetadata(postId, metadata);
+
+        // Add to state
+        setImages(prev => [...prev, metadata]);
+
+        // Add to content with proper markdown
+        setContent(prev => `${prev}\n![${file.name}](${imageId})`);
+
+        console.log(`Image "${file.name}" uploaded and compressed to ${formatFileSize(compressed.blob.size)}`);
+      } catch (error) {
+        console.error('Error processing image:', error);
+        alert(`Error processing ${file.name}: ${error.message}`);
       }
     }
   };
