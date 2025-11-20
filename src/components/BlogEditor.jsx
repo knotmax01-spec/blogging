@@ -607,12 +607,16 @@ function BlogEditor() {
   // Custom components for ReactMarkdown to handle image preview
   const components = useMemo(() => ({
     img: ({src, alt}) => {
-      const image = images.find(img => img.id === src);
+      // Check if src is an image ID from our system
+      const imageMetadata = images.find(img => img.id === src);
+      const imageSrc = imageMetadata ? imageMetadata.dataUrl : src;
+
       return (
         <img
-          src={image ? image.data : src}
-          alt={alt}
-          className="max-w-full h-auto rounded-lg"
+          src={imageSrc}
+          alt={alt || 'Image'}
+          className="max-w-full h-auto rounded-lg shadow-md my-2"
+          loading="lazy"
         />
       );
     }
