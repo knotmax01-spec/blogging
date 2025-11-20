@@ -1,6 +1,43 @@
 {
   "version": "1.0",
-  "lastUpdated": "2024-01-01T00:00:00Z",
-  "totalBlogs": 0,
-  "blogs": []
+  "lastUpdated": "2024-01-20T10:00:00Z",
+  "totalBlogs": 2,
+  "blogs": [
+    {
+      "id": "1705772400000",
+      "title": "Dynamic Blog Loading from Manifest",
+      "slug": "dynamic-blog-loading",
+      "excerpt": "Discover how the blog library automatically loads HTML files from the manifest system, enabling dynamic content updates.",
+      "description": "Discover how the blog library automatically loads HTML files from the manifest system, enabling dynamic content updates without code changes.",
+      "featuredImage": null,
+      "author": "Admin",
+      "category": "Technology",
+      "tags": "dynamic-loading, blog-manifest, static-site, manifest-system",
+      "date": "2024-01-20",
+      "lastModified": "2024-01-20T10:00:00Z",
+      "wordCount": 950,
+      "readingTime": 5,
+      "htmlFile": "published-blogs/dynamic-blog-loading.html",
+      "keywords": "dynamic loading, blog manifest, static site, manifest system",
+      "canonicalUrl": ""
+    },
+    {
+      "id": "1705513200000",
+      "title": "Getting Started with Static Blogs",
+      "slug": "getting-started-with-static-blogs",
+      "excerpt": "Learn how to create and manage a static blog platform with ease. A comprehensive guide to static site generation and blog publishing.",
+      "description": "Learn how to create and manage a static blog platform with ease. A comprehensive guide to static site generation and blog publishing.",
+      "featuredImage": null,
+      "author": "Admin",
+      "category": "Technology",
+      "tags": "static-site, blog-platform, publishing, static-site-generation",
+      "date": "2024-01-15",
+      "lastModified": "2024-01-15T10:00:00Z",
+      "wordCount": 1200,
+      "readingTime": 6,
+      "htmlFile": "published-blogs/getting-started-with-static-blogs.html",
+      "keywords": "static blog, blog platform, publishing, static site generation",
+      "canonicalUrl": ""
+    }
+  ]
 }
