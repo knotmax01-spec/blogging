@@ -2,23 +2,61 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { generateBlogLibraryHTML } from '../utils/blogLibraryGenerator';
 import { downloadBlogAsHTML } from '../utils/staticSiteExporter';
+import { getPublishedBlogsList, sortBlogsByDate } from '../utils/publishedBlogsLoader';
 
 function BlogLibrary() {
   const [posts, setPosts] = useState([]);
+  const [publishedBlogs, setPublishedBlogs] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [categories, setCategories] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [filterType, setFilterType] = useState('all'); // 'all', 'published', 'draft'
 
   useEffect(() => {
-    const savedPosts = JSON.parse(localStorage.getItem('blog-posts') || '[]');
-    const sortedPosts = savedPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
-    setPosts(sortedPosts);
-    setFilteredPosts(sortedPosts);
+    const loadBlogs = async () => {
+      setIsLoading(true);
+      try {
+        // Load published blogs from manifest
+        const published = await getPublishedBlogsList();
+        setPublishedBlogs(published);
 
-    const uniqueCategories = [...new Set(savedPosts.map(p => p.category).filter(Boolean))].sort();
-    setCategories(uniqueCategories);
-  }, []);
+        // Load draft blogs from localStorage
+        const savedPosts = JSON.parse(localStorage.getItem('blog-posts') || '[]');
+
+        // Combine both sources based on filter
+        let combinedPosts = [];
+
+        if (filterType === 'all' || filterType === 'published') {
+          combinedPosts = [...published];
+        }
+        if (filterType === 'all' || filterType === 'draft') {
+          const draftPosts = savedPosts.filter(post => !published.some(p => p.id === post.id));
+          combinedPosts = [...combinedPosts, ...draftPosts];
+        }
+
+        const sortedPosts = sortBlogsByDate(combinedPosts);
+        setPosts(sortedPosts);
+
+        // Extract unique categories
+        const uniqueCategories = [...new Set(sortedPosts.map(p => p.category).filter(Boolean))].sort();
+        setCategories(uniqueCategories);
+      } catch (error) {
+        console.error('Error loading blogs:', error);
+        // Fallback to localStorage only
+        const savedPosts = JSON.parse(localStorage.getItem('blog-posts') || '[]');
+        const sortedPosts = savedPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
+        setPosts(sortedPosts);
+        const uniqueCategories = [...new Set(savedPosts.map(p => p.category).filter(Boolean))].sort();
+        setCategories(uniqueCategories);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadBlogs();
+  }, [filterType]);
 
   useEffect(() => {
     const filtered = posts.filter(post => {
