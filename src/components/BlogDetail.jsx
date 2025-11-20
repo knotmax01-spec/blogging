@@ -72,8 +72,11 @@ function BlogDetail() {
 
   const handleDelete = () => {
     if (window.confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
+      const postId = Number(id);
+
+      // Delete post from localStorage
       const posts = JSON.parse(localStorage.getItem('blog-posts') || '[]');
-      const updatedPosts = posts.filter(p => p.id !== Number(id));
+      const updatedPosts = posts.filter(p => p.id !== postId);
       localStorage.setItem('blog-posts', JSON.stringify(updatedPosts));
 
       // Delete associated comments
@@ -81,10 +84,13 @@ function BlogDetail() {
       delete allComments[id];
       localStorage.setItem('blog-comments', JSON.stringify(allComments));
 
-      // Remove from manifest
-      removeBlogFromManifest(Number(id));
+      // Delete associated images using new imageManager
+      deletePostImages(postId);
 
-      alert('Post deleted successfully');
+      // Remove from manifest
+      removeBlogFromManifest(postId);
+
+      alert('Post and all associated images deleted successfully');
       navigate('/');
     }
   };
