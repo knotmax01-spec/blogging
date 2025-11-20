@@ -642,37 +642,54 @@ function BlogEditor() {
         </div>
         />
         
-        <div
-          ref={dropZoneRef}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onDrop={handleDrop}
-          className={`border-2 border-dashed rounded p-4 transition-colors ${
-            isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300'
-          }`}
-          role="region"
-          aria-label="Image upload area"
-        >
-          <label htmlFor="image-upload" className="block text-sm font-medium text-gray-700 mb-2">
-            Upload Images (Drag & Drop or Click)
+        <div className="space-y-2">
+          <label htmlFor="image-upload" className="block text-sm font-medium text-gray-700">
+            📸 Upload Images (Drag & Drop or Click)
           </label>
-          <input
-            id="image-upload"
-            type="file"
-            accept="image/*"
-            multiple
-            onChange={handleImageUpload}
-            className="block w-full text-sm text-gray-500
-              file:mr-4 file:py-2 file:px-4
-              file:rounded-full file:border-0
-              file:text-sm file:font-semibold
-              file:bg-blue-50 file:text-blue-700
-              hover:file:bg-blue-100"
-            aria-label="File upload for images"
-          />
-          <p className="text-sm text-gray-500 mt-1">
-            {isDragging ? 'Drop images here!' : 'Drag images here or click to upload'}
-          </p>
+          <div
+            ref={dropZoneRef}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            className={`border-2 border-dashed rounded p-4 transition-colors ${
+              isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300'
+            }`}
+            role="region"
+            aria-label="Image upload area"
+          >
+            <input
+              id="image-upload"
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleImageUpload}
+              className="block w-full text-sm text-gray-500
+                file:mr-4 file:py-2 file:px-4
+                file:rounded-full file:border-0
+                file:text-sm file:font-semibold
+                file:bg-blue-50 file:text-blue-700
+                hover:file:bg-blue-100"
+              aria-label="File upload for images"
+            />
+            <p className="text-sm text-gray-500 mt-2">
+              {isDragging ? '✨ Drop images here!' : '🖼️ Drag images here or click to upload'}
+            </p>
+          </div>
+
+          {/* Image Gallery */}
+          {images.length > 0 && (
+            <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+              <h3 className="font-semibold text-gray-900 mb-3">📷 Uploaded Images ({images.length})</h3>
+              <ImageGallery
+                images={images}
+                postId={isEditing ? Number(id) : undefined}
+                onImageDelete={(imageId) => {
+                  setImages(prev => prev.filter(img => img.id !== imageId));
+                  setContent(prev => prev.replace(new RegExp(`!\\[[^\\]]*\\]\\(${imageId}\\)`, 'g'), ''));
+                }}
+              />
+            </div>
+          )}
         </div>
 
         <div className="space-y-2">
