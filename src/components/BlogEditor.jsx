@@ -166,23 +166,14 @@ function BlogEditor() {
       const readingTime = Math.ceil(wordCount / wordsPerMinute);
 
       const posts = JSON.parse(localStorage.getItem('blog-posts') || '[]');
+      const postId = isEditing ? Number(id) : Date.now();
 
-      // Store images separately to avoid localStorage size issues
-      const imageMap = {};
-      images.forEach(img => {
-        imageMap[img.id] = img.data;
-      });
-
-      // Store images in localStorage
-      if (images.length > 0) {
-        const allImages = JSON.parse(localStorage.getItem('blog-images') || '{}');
-        const postId = isEditing ? Number(id) : Date.now();
-        allImages[postId] = imageMap;
-        localStorage.setItem('blog-images', JSON.stringify(allImages));
-      }
+      // Note: Images are already stored via imageManager during upload
+      // Just track the image IDs in the post
+      const imageIds = images.map(img => img.id);
 
       const post = {
-        id: isEditing ? Number(id) : Date.now(),
+        id: postId,
         title,
         content: content,
         metaDescription: autoMetaDescription,
@@ -196,7 +187,7 @@ function BlogEditor() {
         wordCount,
         readingTime,
         layout,
-        imageIds: Object.keys(imageMap),
+        imageIds: imageIds,
         date: isEditing ? posts.find(p => p.id === Number(id)).date : new Date().toISOString(),
         lastModified: new Date().toISOString()
       };
