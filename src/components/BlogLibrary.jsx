@@ -243,11 +243,18 @@ function BlogLibrary() {
                   </div>
                   <div className="p-6 flex flex-col flex-1">
                     <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
-                      {post.category && (
-                        <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded-full">
-                          {post.category}
-                        </span>
-                      )}
+                      <div className="flex gap-2 items-center">
+                        {post.category && (
+                          <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded-full">
+                            {post.category}
+                          </span>
+                        )}
+                        {publishedBlogs.some(p => p.id === post.id) && (
+                          <span className="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded-full flex items-center gap-1">
+                            <span>✓</span> Published
+                          </span>
+                        )}
+                      </div>
                       <span className="text-sm text-gray-500">{post.readingTime || 5} min</span>
                     </div>
 
