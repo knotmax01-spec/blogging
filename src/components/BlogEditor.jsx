@@ -44,6 +44,10 @@ function BlogEditor() {
         setFeaturedImage(post.featuredImage || '');
         setCanonicalUrl(post.canonicalUrl || '');
         setLayout(post.layout || 'default');
+
+        // Load images using new imageManager
+        const imageMetadata = getImageMetadata(Number(id)) || [];
+        setImages(imageMetadata);
       }
     }
   }, [id, isEditing]);
