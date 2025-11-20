@@ -144,25 +144,37 @@ function BlogLibrary() {
         </div>
       </div>
 
+      {/* Loading State */}
+      {isLoading && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 text-center">
+          <div className="inline-block">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          </div>
+          <p className="text-gray-700 mt-2">Loading articles...</p>
+        </div>
+      )}
+
       {/* Stats Section */}
+      {!isLoading && (
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-white rounded-lg p-6 shadow border-l-4 border-blue-500">
           <div className="text-3xl font-bold text-blue-600">{posts.length}</div>
           <p className="text-gray-600 text-sm mt-2">Total Articles</p>
         </div>
         <div className="bg-white rounded-lg p-6 shadow border-l-4 border-green-500">
-          <div className="text-3xl font-bold text-green-600">{categories.length}</div>
-          <p className="text-gray-600 text-sm mt-2">Categories</p>
+          <div className="text-3xl font-bold text-green-600">{publishedBlogs.length}</div>
+          <p className="text-gray-600 text-sm mt-2">Published</p>
         </div>
         <div className="bg-white rounded-lg p-6 shadow border-l-4 border-orange-500">
-          <div className="text-3xl font-bold text-orange-600">{totalReadTime}</div>
-          <p className="text-gray-600 text-sm mt-2">Total Read Time (min)</p>
+          <div className="text-3xl font-bold text-orange-600">{categories.length}</div>
+          <p className="text-gray-600 text-sm mt-2">Categories</p>
         </div>
         <div className="bg-white rounded-lg p-6 shadow border-l-4 border-purple-500">
           <div className="text-3xl font-bold text-purple-600">{avgReadTime}</div>
           <p className="text-gray-600 text-sm mt-2">Avg Read Time (min)</p>
         </div>
       </div>
+      )}
 
       {/* Featured Article */}
       {posts.length > 0 && (
