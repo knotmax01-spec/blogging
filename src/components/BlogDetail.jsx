@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
+import OptimizedMarkdownRenderer from './OptimizedMarkdownRenderer';
 import { removeBlogFromManifest } from '../utils/blogManifest';
 import { downloadBlogAsHTML } from '../utils/staticSiteExporter';
+import { getImageMetadata, getImageData, deletePostImages } from '../utils/imageManager';
 
 function BlogDetail() {
   const [post, setPost] = useState(null);
