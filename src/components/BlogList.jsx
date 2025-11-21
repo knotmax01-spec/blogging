@@ -6,6 +6,7 @@ import { downloadBlogAsHTML } from '../utils/staticSiteExporter';
 function BlogList() {
   const [posts, setPosts] = useState([]);
   const [stats, setStats] = useState({ total: 0, totalWords: 0, totalReadTime: 0 });
+  const location = useLocation();
 
   useEffect(() => {
     const savedPosts = JSON.parse(localStorage.getItem('blog-posts') || '[]');
@@ -17,7 +18,7 @@ function BlogList() {
       totalWords: sortedPosts.reduce((sum, p) => sum + (p.wordCount || 0), 0),
       totalReadTime: sortedPosts.reduce((sum, p) => sum + (p.readingTime || 0), 0)
     });
-  }, []);
+  }, [location]);
 
   const getAverageRating = (postId) => {
     const allComments = JSON.parse(localStorage.getItem('blog-comments') || '{}');
