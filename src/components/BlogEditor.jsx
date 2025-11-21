@@ -644,8 +644,7 @@ function BlogEditor() {
             </p>
           )}
         </div>
-        />
-        
+
         <div className="space-y-2">
           <label htmlFor="image-upload" className="block text-sm font-medium text-gray-700">
             📸 Upload Images (Drag & Drop or Click)
