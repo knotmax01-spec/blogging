@@ -13,6 +13,7 @@ function BlogLibrary() {
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filterType, setFilterType] = useState('all'); // 'all', 'published', 'draft'
+  const location = useLocation();
 
   useEffect(() => {
     const loadBlogs = async () => {
