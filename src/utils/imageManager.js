@@ -166,7 +166,7 @@ export const getPostImages = (postId) => {
       ...img,
       dataUrl,
       // For public access, use the file path
-      publicUrl: `/blog-images/${img.filename}`
+      publicUrl: `/blog-images/inline/${img.filename}`
     };
   });
   
