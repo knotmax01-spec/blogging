@@ -8,7 +8,9 @@ function ImageGallery({ images, postId, onImageDelete, onImageSelect }) {
 
   const handleDeleteImage = useCallback((imageId) => {
     if (window.confirm('Are you sure you want to delete this image?')) {
-      deleteImageMetadata(postId, imageId);
+      if (postId) {
+        deleteImageMetadata(postId, imageId);
+      }
       if (onImageDelete) {
         onImageDelete(imageId);
       }
