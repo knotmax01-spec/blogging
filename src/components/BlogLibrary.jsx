@@ -57,7 +57,7 @@ function BlogLibrary() {
     };
 
     loadBlogs();
-  }, [filterType]);
+  }, [filterType, location]);
 
   useEffect(() => {
     const filtered = posts.filter(post => {
