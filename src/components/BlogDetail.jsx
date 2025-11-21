@@ -184,7 +184,8 @@ function BlogDetail() {
           <ReactMarkdown
             components={{
               img: ({src, alt, ...props}) => {
-                const imageSrc = postImages[src] || src;
+                const imageData = postImages[src];
+                const imageSrc = imageData?.dataUrl || src;
                 return (
                   <img
                     src={imageSrc}
