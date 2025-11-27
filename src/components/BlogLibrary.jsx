@@ -153,32 +153,52 @@ function BlogLibrary() {
 
       {/* Loading State */}
       {isLoading && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 text-center">
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-2xl p-12 text-center">
           <div className="inline-block">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <div className="animate-spin rounded-full h-10 w-10 border-4 border-blue-200 border-t-blue-600"></div>
           </div>
-          <p className="text-gray-700 mt-2">Loading articles...</p>
+          <p className="text-gray-700 mt-4 text-lg font-medium">Loading articles...</p>
         </div>
       )}
 
       {/* Stats Section */}
       {!isLoading && (
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-lg p-6 shadow border-l-4 border-blue-500">
-          <div className="text-3xl font-bold text-blue-600">{posts.length}</div>
-          <p className="text-gray-600 text-sm mt-2">Total Articles</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="bg-white rounded-xl p-7 shadow-md hover:shadow-lg transition-shadow border-t-4 border-blue-500 group">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-600 text-sm font-medium mb-1">Total Articles</p>
+              <div className="text-4xl font-bold text-blue-600">{posts.length}</div>
+            </div>
+            <div className="text-4xl opacity-30 group-hover:opacity-50 transition-opacity">📄</div>
+          </div>
         </div>
-        <div className="bg-white rounded-lg p-6 shadow border-l-4 border-green-500">
-          <div className="text-3xl font-bold text-green-600">{publishedBlogs.length}</div>
-          <p className="text-gray-600 text-sm mt-2">Published</p>
+        <div className="bg-white rounded-xl p-7 shadow-md hover:shadow-lg transition-shadow border-t-4 border-green-500 group">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-600 text-sm font-medium mb-1">Published</p>
+              <div className="text-4xl font-bold text-green-600">{publishedBlogs.length}</div>
+            </div>
+            <div className="text-4xl opacity-30 group-hover:opacity-50 transition-opacity">✓</div>
+          </div>
         </div>
-        <div className="bg-white rounded-lg p-6 shadow border-l-4 border-orange-500">
-          <div className="text-3xl font-bold text-orange-600">{categories.length}</div>
-          <p className="text-gray-600 text-sm mt-2">Categories</p>
+        <div className="bg-white rounded-xl p-7 shadow-md hover:shadow-lg transition-shadow border-t-4 border-orange-500 group">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-600 text-sm font-medium mb-1">Categories</p>
+              <div className="text-4xl font-bold text-orange-600">{categories.length}</div>
+            </div>
+            <div className="text-4xl opacity-30 group-hover:opacity-50 transition-opacity">🏷️</div>
+          </div>
         </div>
-        <div className="bg-white rounded-lg p-6 shadow border-l-4 border-purple-500">
-          <div className="text-3xl font-bold text-purple-600">{avgReadTime}</div>
-          <p className="text-gray-600 text-sm mt-2">Avg Read Time (min)</p>
+        <div className="bg-white rounded-xl p-7 shadow-md hover:shadow-lg transition-shadow border-t-4 border-purple-500 group">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-600 text-sm font-medium mb-1">Avg Read Time</p>
+              <div className="text-4xl font-bold text-purple-600">{avgReadTime} <span className="text-lg text-gray-500">min</span></div>
+            </div>
+            <div className="text-4xl opacity-30 group-hover:opacity-50 transition-opacity">⏱️</div>
+          </div>
         </div>
       </div>
       )}
