@@ -214,16 +214,37 @@ function BlogList() {
       </div>
 
       {/* Tips Section */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-        <h3 className="text-lg font-bold text-blue-900 mb-4">💡 Pro Tips</h3>
-        <ul className="space-y-2 text-gray-700">
-          <li>• Use categories and tags to organize your content</li>
-          <li>• Add featured images to make your posts more attractive</li>
-          <li>• Write descriptive meta descriptions for better SEO</li>
-          <li>• Enable reader comments to build community engagement</li>
-          <li>• Export your blog library as a standalone HTML index page</li>
-          <li>• Download individual blog posts as HTML files for static hosting</li>
-        </ul>
+      <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-2xl p-8 shadow-sm">
+        <div className="flex items-center space-x-3 mb-6">
+          <span className="text-3xl">💡</span>
+          <h3 className="text-2xl font-bold text-blue-900">Pro Tips for Success</h3>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex items-start space-x-3 bg-white p-4 rounded-lg border border-blue-100">
+            <span className="text-xl flex-shrink-0">📁</span>
+            <p className="text-gray-700 font-medium">Use categories and tags to organize your content</p>
+          </div>
+          <div className="flex items-start space-x-3 bg-white p-4 rounded-lg border border-blue-100">
+            <span className="text-xl flex-shrink-0">🖼️</span>
+            <p className="text-gray-700 font-medium">Add featured images to make posts more attractive</p>
+          </div>
+          <div className="flex items-start space-x-3 bg-white p-4 rounded-lg border border-blue-100">
+            <span className="text-xl flex-shrink-0">📝</span>
+            <p className="text-gray-700 font-medium">Write descriptive meta descriptions for better SEO</p>
+          </div>
+          <div className="flex items-start space-x-3 bg-white p-4 rounded-lg border border-blue-100">
+            <span className="text-xl flex-shrink-0">💬</span>
+            <p className="text-gray-700 font-medium">Enable reader comments to build community engagement</p>
+          </div>
+          <div className="flex items-start space-x-3 bg-white p-4 rounded-lg border border-blue-100">
+            <span className="text-xl flex-shrink-0">📚</span>
+            <p className="text-gray-700 font-medium">Export your blog library as a standalone HTML index</p>
+          </div>
+          <div className="flex items-start space-x-3 bg-white p-4 rounded-lg border border-blue-100">
+            <span className="text-xl flex-shrink-0">📥</span>
+            <p className="text-gray-700 font-medium">Download individual blog posts as HTML files</p>
+          </div>
+        </div>
       </div>
     </div>
   );
