@@ -922,15 +922,27 @@ function BlogEditor() {
         )}
       </div>
       
-      <div className="border rounded p-4 bg-white">
-        <h2 className="text-2xl font-bold mb-4">Preview</h2>
-        <div className={getPreviewClasses()}>
-          <h1 className="text-4xl font-bold mb-4">{title}</h1>
-          <div className="prose prose-lg">
-            <ReactMarkdown components={components}>
-              {content}
-            </ReactMarkdown>
-          </div>
+      <div className="border-2 border-gray-300 rounded-2xl p-8 bg-white shadow-lg">
+        <div className="flex items-center space-x-3 mb-6">
+          <span className="text-3xl">👁️</span>
+          <h2 className="text-3xl font-bold">Live Preview</h2>
+        </div>
+        <div className={`${getPreviewClasses()} bg-gradient-to-br from-gray-50 to-gray-100 p-8 rounded-xl border-2 border-gray-200`}>
+          {title ? (
+            <>
+              <h1 className="text-4xl font-bold mb-6 text-gray-900">{title}</h1>
+              <div className="prose prose-lg max-w-none text-gray-800">
+                <ReactMarkdown components={components}>
+                  {content || '✍️ Start typing your content here...'}
+                </ReactMarkdown>
+              </div>
+            </>
+          ) : (
+            <div className="text-center py-12">
+              <div className="text-6xl mb-4 opacity-40">📝</div>
+              <p className="text-gray-500 text-lg">Enter a title and start writing to see the preview</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
