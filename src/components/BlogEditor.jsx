@@ -623,14 +623,19 @@ function BlogEditor() {
   }), [images]);
 
   return (
-    <div className="grid grid-cols-2 gap-8">
-      <div className="space-y-4">
-        <h1 className="text-2xl font-bold">{isEditing ? 'Edit Post' : 'Create New Post'}</h1>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pb-8">
+      <div className="space-y-6">
+        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 border-2 border-blue-200">
+          <h1 className="text-4xl font-bold mb-2">{isEditing ? '✏️ Edit Post' : '✨ Create New Post'}</h1>
+          <p className="text-gray-600 text-lg">{isEditing ? 'Update your blog post and regenerate HTML' : 'Write, preview, and publish your blog post'}</p>
+        </div>
+
         <div>
+          <label className="block text-sm font-bold text-gray-700 mb-2">Post Title</label>
           <input
             type="text"
-            placeholder="Post Title"
-            className={`w-full p-2 border rounded ${validationErrors.title ? 'border-red-500' : ''}`}
+            placeholder="Enter an engaging title for your post..."
+            className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-500 font-medium transition ${validationErrors.title ? 'border-red-500' : 'border-gray-300'}`}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             aria-label="Post title"
@@ -638,11 +643,14 @@ function BlogEditor() {
             aria-describedby={validationErrors.title ? 'title-error' : undefined}
             maxLength="200"
           />
-          {validationErrors.title && (
-            <p id="title-error" className="text-red-600 text-sm mt-1" role="alert">
-              {validationErrors.title}
-            </p>
-          )}
+          <div className="flex items-center justify-between mt-2">
+            <p className="text-xs text-gray-500">{title.length}/200 characters</p>
+            {validationErrors.title && (
+              <p id="title-error" className="text-red-600 text-sm" role="alert">
+                ✗ {validationErrors.title}
+              </p>
+            )}
+          </div>
         </div>
 
         <div className="space-y-2">
