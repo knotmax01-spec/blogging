@@ -60,24 +60,44 @@ function BlogList() {
       </div>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-lg p-6 shadow border-l-4 border-blue-500">
-          <div className="text-3xl font-bold text-blue-600">{stats.total}</div>
-          <p className="text-gray-600 text-sm mt-2">Published Posts</p>
-        </div>
-        <div className="bg-white rounded-lg p-6 shadow border-l-4 border-green-500">
-          <div className="text-3xl font-bold text-green-600">{stats.totalWords.toLocaleString()}</div>
-          <p className="text-gray-600 text-sm mt-2">Total Words</p>
-        </div>
-        <div className="bg-white rounded-lg p-6 shadow border-l-4 border-orange-500">
-          <div className="text-3xl font-bold text-orange-600">{stats.totalReadTime}</div>
-          <p className="text-gray-600 text-sm mt-2">Total Read Time (min)</p>
-        </div>
-        <div className="bg-white rounded-lg p-6 shadow border-l-4 border-purple-500">
-          <div className="text-3xl font-bold text-purple-600">
-            {stats.total > 0 ? Math.round(stats.totalWords / stats.total) : 0}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="bg-white rounded-xl p-7 shadow-md hover:shadow-lg transition-shadow border-t-4 border-blue-500 group">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-600 text-sm font-medium mb-1">Published Posts</p>
+              <div className="text-4xl font-bold text-blue-600">{stats.total}</div>
+            </div>
+            <div className="text-4xl opacity-30 group-hover:opacity-50 transition-opacity">📄</div>
           </div>
-          <p className="text-gray-600 text-sm mt-2">Avg Words per Post</p>
+        </div>
+        <div className="bg-white rounded-xl p-7 shadow-md hover:shadow-lg transition-shadow border-t-4 border-green-500 group">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-600 text-sm font-medium mb-1">Total Words</p>
+              <div className="text-4xl font-bold text-green-600">{stats.totalWords.toLocaleString()}</div>
+            </div>
+            <div className="text-4xl opacity-30 group-hover:opacity-50 transition-opacity">✍️</div>
+          </div>
+        </div>
+        <div className="bg-white rounded-xl p-7 shadow-md hover:shadow-lg transition-shadow border-t-4 border-orange-500 group">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-600 text-sm font-medium mb-1">Total Read Time</p>
+              <div className="text-4xl font-bold text-orange-600">{stats.totalReadTime} <span className="text-lg text-gray-500">min</span></div>
+            </div>
+            <div className="text-4xl opacity-30 group-hover:opacity-50 transition-opacity">⏱️</div>
+          </div>
+        </div>
+        <div className="bg-white rounded-xl p-7 shadow-md hover:shadow-lg transition-shadow border-t-4 border-purple-500 group">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-600 text-sm font-medium mb-1">Avg Words/Post</p>
+              <div className="text-4xl font-bold text-purple-600">
+                {stats.total > 0 ? Math.round(stats.totalWords / stats.total) : 0}
+              </div>
+            </div>
+            <div className="text-4xl opacity-30 group-hover:opacity-50 transition-opacity">📊</div>
+          </div>
         </div>
       </div>
 
