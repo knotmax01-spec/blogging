@@ -205,45 +205,49 @@ function BlogLibrary() {
 
       {/* Featured Article */}
       {posts.length > 0 && (
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden border-2 border-blue-200">
-          <div className="bg-blue-50 p-6 border-b border-blue-200">
-            <h2 className="text-2xl font-bold text-gray-900">✨ Featured Article</h2>
+        <div className="bg-white rounded-2xl shadow-xl overflow-hidden border-2 border-blue-200 hover:shadow-2xl transition-shadow">
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 border-b border-blue-200 flex items-center space-x-3">
+            <span className="text-3xl">✨</span>
+            <h2 className="text-2xl font-bold text-gray-900">Featured Article</h2>
           </div>
-          <div className="p-8">
+          <div className="p-10">
             <Link to={`/post/${posts[0].id}`} className="group">
-              <h3 className="text-3xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition">
+              <h3 className="text-4xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition line-clamp-2">
                 {posts[0].title}
               </h3>
             </Link>
-            <div className="flex items-center gap-3 mb-4 flex-wrap">
+            <div className="flex items-center gap-3 mb-6 flex-wrap">
               {posts[0].category && (
-                <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full">
+                <span className="bg-blue-100 text-blue-800 text-xs font-bold px-4 py-2 rounded-full">
                   {posts[0].category}
                 </span>
               )}
               {posts[0].tags && posts[0].tags.split(',').slice(0, 2).map((tag, i) => (
-                <span key={i} className="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">
+                <span key={i} className="bg-gray-200 text-gray-800 text-xs font-medium px-3 py-1.5 rounded-full">
                   {tag.trim()}
                 </span>
               ))}
             </div>
-            <p className="text-gray-600 text-lg mb-4">
+            <p className="text-gray-700 text-lg mb-6 leading-relaxed">
               {posts[0].metaDescription}
             </p>
-            <div className="flex items-center text-sm text-gray-600 mb-6">
-              {posts[0].author && <span className="font-medium text-gray-900">{posts[0].author}</span>}
-              {posts[0].author && <span className="mx-2">•</span>}
-              <time>{new Date(posts[0].date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
-              <span className="mx-2">•</span>
-              <span>{posts[0].readingTime || 5} min read</span>
-              <span className="mx-2">•</span>
-              <span>{posts[0].wordCount} words</span>
+            <div className="flex items-center text-sm text-gray-600 mb-8 flex-wrap gap-3">
+              {posts[0].author && <span className="font-semibold text-gray-900 bg-gray-100 px-3 py-1 rounded-full">{posts[0].author}</span>}
+              {posts[0].author && <span className="text-gray-400">•</span>}
+              <time className="bg-gray-100 px-3 py-1 rounded-full text-gray-700 font-medium">{new Date(posts[0].date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
+              <span className="text-gray-400">•</span>
+              <span className="text-gray-600">{posts[0].readingTime || 5} min read</span>
+              <span className="text-gray-400">•</span>
+              <span className="text-gray-600">{posts[0].wordCount || 0} words</span>
             </div>
             <Link
               to={`/post/${posts[0].id}`}
-              className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
+              className="group inline-block bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-3 rounded-xl font-bold hover:shadow-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200"
             >
-              Read Full Article →
+              <span className="flex items-center space-x-2">
+                <span>Read Full Article</span>
+                <span className="group-hover:translate-x-1 transition-transform">→</span>
+              </span>
             </Link>
           </div>
         </div>
