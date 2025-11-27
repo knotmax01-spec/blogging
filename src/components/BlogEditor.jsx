@@ -709,24 +709,24 @@ function BlogEditor() {
           )}
         </div>
 
-        <div className="space-y-2">
-          <label htmlFor="layout-select" className="block text-sm font-medium text-gray-700">Layout Style</label>
+        <div className="space-y-3">
+          <label htmlFor="layout-select" className="block text-sm font-bold text-gray-700">Layout Style</label>
           <select
             id="layout-select"
             value={layout}
             onChange={(e) => setLayout(e.target.value)}
-            className="w-full p-2 border rounded"
+            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent font-medium bg-white"
             aria-label="Blog layout style"
           >
-            <option value="default">Default</option>
-            <option value="centered">Centered</option>
-            <option value="wide">Wide</option>
-            <option value="sidebar">With Sidebar</option>
+            <option value="default">📄 Default</option>
+            <option value="centered">⬜ Centered</option>
+            <option value="wide">📐 Wide</option>
+            <option value="sidebar">📑 With Sidebar</option>
           </select>
         </div>
 
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">Content</label>
+        <div className="space-y-3">
+          <label className="block text-sm font-bold text-gray-700">Content</label>
           <RichTextEditor
             content={content}
             onChange={setContent}
