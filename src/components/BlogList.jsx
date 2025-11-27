@@ -43,12 +43,17 @@ function BlogList() {
   return (
     <div className="space-y-8">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-lg p-8 shadow-lg">
-        <h1 className="text-4xl font-bold mb-2">Welcome to Your Blog Dashboard</h1>
-        <p className="text-blue-100 text-lg mb-6">Manage, create, and publish your blog posts with ease</p>
+      <div className="bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900 text-white rounded-2xl p-12 shadow-2xl border border-blue-400/20">
+        <div className="flex items-start justify-between mb-6">
+          <div>
+            <h1 className="text-5xl font-bold mb-3">Welcome to Your Blog Dashboard</h1>
+            <p className="text-blue-100 text-lg max-w-xl">Manage, create, and publish your blog posts with ease. Build your perfect blog platform today.</p>
+          </div>
+          <div className="text-6xl opacity-30">📝</div>
+        </div>
         <Link
           to="/new"
-          className="inline-block bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition"
+          className="inline-block bg-white text-blue-600 px-8 py-3 rounded-lg font-bold hover:shadow-lg hover:scale-105 transition-all duration-200 text-lg"
         >
           ✨ Create New Post
         </Link>
