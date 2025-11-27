@@ -255,10 +255,16 @@ function BlogLibrary() {
 
       {/* Articles Grid */}
       <div>
-        <h2 className="text-3xl font-bold mb-6">
-          {selectedCategory ? `Articles in ${selectedCategory}` : 'All Articles'}
-          {filteredPosts.length > 0 && <span className="text-lg text-gray-600 ml-2">({filteredPosts.length})</span>}
-        </h2>
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-4xl font-bold">
+            {selectedCategory ? `${selectedCategory}` : 'All Articles'}
+          </h2>
+          {filteredPosts.length > 0 && (
+            <span className="text-sm font-bold text-white bg-blue-600 px-4 py-2 rounded-full">
+              {filteredPosts.length} article{filteredPosts.length !== 1 ? 's' : ''}
+            </span>
+          )}
+        </div>
         {filteredPosts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredPosts.map(post => {
@@ -267,54 +273,60 @@ function BlogLibrary() {
                 <Link
                   key={post.id}
                   to={`/post/${post.id}`}
-                  className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow overflow-hidden border border-gray-200 group flex flex-col h-full"
+                  className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-200 overflow-hidden border border-gray-200 group flex flex-col h-full hover:border-blue-300"
                 >
-                  <div className="bg-gradient-to-br from-blue-400 to-blue-600 h-40 flex items-center justify-center text-white text-5xl font-bold">
+                  <div className="bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 h-48 flex items-center justify-center text-white text-6xl font-bold relative overflow-hidden group-hover:scale-105 transition-transform">
                     {post.title.charAt(0).toUpperCase()}
+                    <div className="absolute inset-0 bg-black/10 group-hover:bg-black/5 transition"></div>
                   </div>
-                  <div className="p-6 flex flex-col flex-1">
-                    <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
-                      <div className="flex gap-2 items-center">
+                  <div className="p-7 flex flex-col flex-1">
+                    <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+                      <div className="flex gap-2 items-center flex-wrap">
                         {post.category && (
-                          <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded-full">
+                          <span className="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full">
                             {post.category}
                           </span>
                         )}
                         {publishedBlogs.some(p => p.id === post.id) && (
-                          <span className="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded-full flex items-center gap-1">
+                          <span className="bg-green-100 text-green-800 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
                             <span>✓</span> Published
                           </span>
                         )}
                       </div>
-                      <span className="text-sm text-gray-500">{post.readingTime || 5} min</span>
+                      <span className="text-xs font-medium text-gray-600 bg-gray-100 px-3 py-1.5 rounded-lg">{post.readingTime || 5} min</span>
                     </div>
 
-                    <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition line-clamp-2">
+                    <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition line-clamp-2">
                       {post.title}
                     </h3>
 
-                    <p className="text-gray-600 text-sm mb-4 flex-1 line-clamp-3">
+                    <p className="text-gray-600 text-sm mb-5 flex-1 line-clamp-3 leading-relaxed">
                       {post.metaDescription}
                     </p>
 
                     {post.tags && (
-                      <div className="mb-4 flex flex-wrap gap-1">
+                      <div className="mb-5 flex flex-wrap gap-2">
                         {post.tags.split(',').slice(0, 2).map((tag, i) => (
-                          <span key={i} className="bg-gray-100 text-gray-700 text-xs px-2 py-0.5 rounded">
+                          <span key={i} className="bg-gray-100 text-gray-700 text-xs font-medium px-3 py-1 rounded-full">
                             {tag.trim()}
                           </span>
                         ))}
                       </div>
                     )}
 
-                    <div className="flex items-center justify-between text-xs text-gray-500 border-t pt-4 mt-auto">
-                      <div className="flex items-center space-x-2">
-                        <span className="font-medium text-gray-900">{post.author || 'Anonymous'}</span>
-                        <span>•</span>
-                        <time>{new Date(post.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</time>
+                    <div className="flex items-center justify-between text-xs text-gray-600 border-t border-gray-200 pt-5 mt-auto">
+                      <div className="flex items-center space-x-2 flex-wrap gap-1">
+                        <span className="font-semibold text-gray-900">{post.author || 'Anonymous'}</span>
+                        <span className="text-gray-400">•</span>
+                        <time className="text-gray-500">{new Date(post.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</time>
                       </div>
                       <div className="flex items-center">
-                        {avgRating && <span className="text-yellow-400 font-bold">★ {avgRating}</span>}
+                        {avgRating && (
+                          <div className="flex items-center space-x-1 bg-yellow-50 px-2.5 py-1 rounded-lg">
+                            <span className="text-yellow-500 font-bold">★</span>
+                            <span className="text-xs font-bold text-yellow-700">{avgRating}</span>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -323,13 +335,14 @@ function BlogLibrary() {
             })}
           </div>
         ) : (
-          <div className="text-center py-12 bg-gray-50 rounded-lg">
-            <p className="text-gray-500 text-lg mb-4">
+          <div className="text-center py-16 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border-2 border-blue-200 border-dashed">
+            <div className="text-6xl mb-4 opacity-40">🔍</div>
+            <p className="text-gray-700 text-lg font-medium mb-6">
               {posts.length === 0 ? 'No posts published yet.' : 'No articles match your search.'}
             </p>
             {posts.length === 0 && (
-              <Link to="/new" className="inline-block bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
-                Create your first post
+              <Link to="/new" className="inline-block bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-3 rounded-xl font-bold hover:shadow-lg transition-all duration-200">
+                ✨ Create your first post
               </Link>
             )}
           </div>
