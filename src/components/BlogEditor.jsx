@@ -739,8 +739,11 @@ function BlogEditor() {
         </div>
         
         {/* SEO Section */}
-        <div className="bg-blue-50 p-4 rounded-lg space-y-4">
-          <h3 className="text-lg font-semibold text-blue-900">SEO & Metadata</h3>
+        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-8 rounded-2xl border-2 border-blue-200 space-y-6">
+          <h3 className="text-2xl font-bold text-blue-900 flex items-center space-x-2">
+            <span>🔍</span>
+            <span>SEO & Metadata</span>
+          </h3>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
