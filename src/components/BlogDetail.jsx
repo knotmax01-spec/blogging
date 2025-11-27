@@ -113,11 +113,14 @@ function BlogDetail() {
 
   if (!post) {
     return (
-      <div className="text-center py-8">
-        <p className="text-gray-500">Post not found</p>
-        <Link to="/" className="text-blue-500 hover:underline mt-4 inline-block">
-          Back to posts
-        </Link>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center bg-gradient-to-br from-blue-50 to-indigo-50 p-12 rounded-2xl border-2 border-blue-200 border-dashed">
+          <div className="text-6xl mb-4 opacity-40">📄</div>
+          <p className="text-gray-700 text-lg font-medium mb-6">Post not found</p>
+          <Link to="/" className="inline-block bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-3 rounded-xl font-bold hover:shadow-lg transition-all duration-200">
+            ← Back to Dashboard
+          </Link>
+        </div>
       </div>
     );
   }
