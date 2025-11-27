@@ -96,27 +96,32 @@ function BlogLibrary() {
   return (
     <div className="space-y-8">
       {/* Header Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-lg p-8 shadow-lg">
-        <h1 className="text-4xl font-bold mb-2">📚 Blog Library</h1>
-        <p className="text-blue-100 text-lg mb-6">Explore all published articles and discover great content</p>
+      <div className="bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900 text-white rounded-2xl p-12 shadow-2xl border border-blue-400/20">
+        <div className="flex items-start justify-between mb-8">
+          <div>
+            <h1 className="text-5xl font-bold mb-3">📚 Blog Library</h1>
+            <p className="text-blue-100 text-lg max-w-xl">Explore all published articles and discover great content. Find what you're looking for.</p>
+          </div>
+          <div className="text-6xl opacity-30 hidden md:block">📖</div>
+        </div>
 
         {/* Search and Filter */}
-        <div className="flex flex-col gap-4">
-          <div className="flex-1">
+        <div className="space-y-4">
+          <div>
             <input
               type="text"
               placeholder="Search articles by title, content, or tags..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-4 py-3 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-300"
+              className="w-full px-5 py-3 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-300 placeholder-gray-500 font-medium"
               disabled={isLoading}
             />
           </div>
-          <div className="flex gap-4 flex-wrap">
+          <div className="flex gap-3 flex-wrap">
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="px-4 py-2 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-300"
+              className="px-5 py-2.5 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-300 font-medium bg-white"
               disabled={isLoading}
             >
               <option value="">All Categories</option>
@@ -127,7 +132,7 @@ function BlogLibrary() {
             <select
               value={filterType}
               onChange={(e) => setFilterType(e.target.value)}
-              className="px-4 py-2 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-300"
+              className="px-5 py-2.5 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-300 font-medium bg-white"
               disabled={isLoading}
             >
               <option value="all">All Articles</option>
@@ -136,10 +141,11 @@ function BlogLibrary() {
             </select>
             <button
               onClick={exportLibraryHTML}
-              className="bg-white text-blue-600 px-4 py-2 rounded-lg font-semibold hover:bg-blue-50 transition disabled:opacity-50"
+              className="bg-white text-blue-600 px-6 py-2.5 rounded-lg font-bold hover:shadow-lg hover:bg-blue-50 transition-all duration-200 disabled:opacity-50 flex items-center space-x-2"
               disabled={isLoading}
             >
-              📥 Export as HTML
+              <span>📥</span>
+              <span>Export as HTML</span>
             </button>
           </div>
         </div>
