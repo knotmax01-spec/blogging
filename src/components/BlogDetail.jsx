@@ -160,30 +160,32 @@ function BlogDetail() {
           </button>
         </div>
       </div>
-      <article className="bg-white rounded-lg shadow-md p-8 mb-8 border border-gray-200">
-        <h1 className="text-4xl font-bold mb-4 text-gray-900">{post.title}</h1>
-        <div className="flex items-center text-gray-600 mb-8 pb-6 border-b flex-wrap gap-4">
-          <div className="flex items-center space-x-2">
-            <span className="text-sm">By</span>
-            <span className="font-semibold text-gray-900">{post.author || 'Anonymous'}</span>
+      <article className="bg-white rounded-2xl shadow-lg p-10 mb-10 border border-gray-200 hover:shadow-xl transition-shadow">
+        <h1 className="text-5xl font-bold mb-6 text-gray-900 leading-tight">{post.title}</h1>
+        <div className="flex items-center flex-wrap gap-4 mb-10 pb-8 border-b border-gray-200">
+          <div className="flex items-center space-x-2 bg-gray-100 px-4 py-2 rounded-lg">
+            <span className="text-gray-700">By</span>
+            <span className="font-bold text-gray-900">{post.author || 'Anonymous'}</span>
           </div>
-          <span>•</span>
-          <time className="text-sm">
+          <time className="text-gray-600 font-medium bg-gray-100 px-4 py-2 rounded-lg">
             {new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
           </time>
-          <span>•</span>
-          <span className="text-sm">{post.readingTime || 5} min read</span>
-          <span>•</span>
-          <span className="text-sm">{post.wordCount} words</span>
-          <span>•</span>
-          <span className="text-yellow-400 font-bold">★ {averageRating}</span>
+          <div className="flex items-center space-x-1 bg-blue-100 px-4 py-2 rounded-lg">
+            <span className="text-blue-700 font-medium">{post.readingTime || 5} min read</span>
+          </div>
+          <div className="flex items-center space-x-1 bg-purple-100 px-4 py-2 rounded-lg">
+            <span className="text-purple-700 font-medium">{post.wordCount || 0} words</span>
+          </div>
+          {averageRating !== 'No ratings yet' && (
+            <div className="flex items-center space-x-2 bg-yellow-100 px-4 py-2 rounded-lg">
+              <span className="text-yellow-600 font-bold text-lg">★</span>
+              <span className="text-yellow-700 font-bold">{averageRating}</span>
+            </div>
+          )}
           {post.category && (
-            <>
-              <span>•</span>
-              <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded-full">
-                {post.category}
-              </span>
-            </>
+            <span className="bg-blue-600 text-white text-xs font-bold px-4 py-2 rounded-full">
+              {post.category}
+            </span>
           )}
         </div>
         <div className="prose prose-lg max-w-none">
