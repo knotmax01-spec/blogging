@@ -653,17 +653,17 @@ function BlogEditor() {
           </div>
         </div>
 
-        <div className="space-y-2">
-          <label htmlFor="image-upload" className="block text-sm font-medium text-gray-700">
-            📸 Upload Images (Drag & Drop or Click)
+        <div className="space-y-3">
+          <label htmlFor="image-upload" className="block text-sm font-bold text-gray-700">
+            📸 Upload Images
           </label>
           <div
             ref={dropZoneRef}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
-            className={`border-2 border-dashed rounded p-4 transition-colors ${
-              isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300'
+            className={`border-3 border-dashed rounded-xl p-8 transition-all ${
+              isDragging ? 'border-blue-500 bg-blue-50 scale-105' : 'border-gray-300 bg-gray-50 hover:bg-gray-100'
             }`}
             role="region"
             aria-label="Image upload area"
@@ -678,19 +678,25 @@ function BlogEditor() {
                 file:mr-4 file:py-2 file:px-4
                 file:rounded-full file:border-0
                 file:text-sm file:font-semibold
-                file:bg-blue-50 file:text-blue-700
-                hover:file:bg-blue-100"
+                file:bg-blue-100 file:text-blue-700
+                hover:file:bg-blue-200 hover:file:cursor-pointer"
               aria-label="File upload for images"
             />
-            <p className="text-sm text-gray-500 mt-2">
-              {isDragging ? '✨ Drop images here!' : '🖼️ Drag images here or click to upload'}
+            <p className="text-center text-gray-600 mt-3 font-medium">
+              {isDragging ? '✨ Drop images here!' : '🖼️ Drag and drop images here or click to upload'}
+            </p>
+            <p className="text-center text-xs text-gray-500 mt-2">
+              Supported formats: JPG, PNG, WebP. Max 10MB per image.
             </p>
           </div>
 
           {/* Image Gallery */}
           {images.length > 0 && (
-            <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-              <h3 className="font-semibold text-gray-900 mb-3">📷 Uploaded Images ({images.length})</h3>
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-xl border-2 border-blue-200">
+              <h3 className="font-bold text-gray-900 mb-4 flex items-center space-x-2">
+                <span>📷</span>
+                <span>Uploaded Images ({images.length})</span>
+              </h3>
               <ImageGallery
                 images={images}
                 postId={isEditing ? Number(id) : undefined}
