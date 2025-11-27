@@ -131,29 +131,32 @@ function BlogDetail() {
 
   return (
     <div className="max-w-4xl mx-auto p-8">
-      <div className="flex justify-between items-center mb-8">
-        <Link to="/" className="text-blue-600 hover:text-blue-800 font-semibold flex items-center space-x-1">
-          <span>←</span>
-          <span>Back to Dashboard</span>
+      <div className="flex justify-between items-center mb-10 flex-wrap gap-4">
+        <Link to="/" className="group flex items-center space-x-2 text-blue-600 hover:text-blue-800 font-bold text-lg transition">
+          <span className="group-hover:-translate-x-1 transition-transform">←</span>
+          <span>Back</span>
         </Link>
-        <div className="space-x-3 flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-3 justify-end">
           <button
             onClick={() => downloadBlogAsHTML(post)}
-            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 font-semibold transition"
+            className="group flex items-center space-x-2 bg-gradient-to-r from-green-500 to-green-600 text-white px-5 py-2.5 rounded-xl hover:shadow-lg hover:from-green-600 hover:to-green-700 font-bold transition-all duration-200"
           >
-            📥 Download HTML
+            <span>📥</span>
+            <span>Download</span>
           </button>
           <button
             onClick={handleEdit}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 font-semibold transition"
+            className="group flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-5 py-2.5 rounded-xl hover:shadow-lg hover:from-blue-600 hover:to-blue-700 font-bold transition-all duration-200"
           >
-            ✏️ Edit Post
+            <span>✏️</span>
+            <span>Edit</span>
           </button>
           <button
             onClick={handleDelete}
-            className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 font-semibold transition"
+            className="group flex items-center space-x-2 bg-gradient-to-r from-red-500 to-red-600 text-white px-5 py-2.5 rounded-xl hover:shadow-lg hover:from-red-600 hover:to-red-700 font-bold transition-all duration-200"
           >
-            🗑️ Delete
+            <span>🗑️</span>
+            <span>Delete</span>
           </button>
         </div>
       </div>
