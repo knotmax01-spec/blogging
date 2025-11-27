@@ -210,44 +210,50 @@ function BlogDetail() {
         </div>
       </article>
 
-      <div className="bg-white rounded-lg shadow-md p-8 border border-gray-200">
-        <h2 className="text-2xl font-bold mb-8 border-b pb-4">💬 Comments ({comments.length})</h2>
+      <div className="bg-white rounded-2xl shadow-lg p-10 border border-gray-200">
+        <div className="flex items-center space-x-3 mb-10">
+          <span className="text-3xl">💬</span>
+          <h2 className="text-3xl font-bold">Comments <span className="text-lg text-gray-500">({comments.length})</span></h2>
+        </div>
 
-        <div className="mb-8 bg-blue-50 p-6 rounded-lg border border-blue-200">
-          <h3 className="font-bold text-gray-900 mb-4">Leave a Comment</h3>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+        <div className="mb-10 bg-gradient-to-br from-blue-50 to-indigo-50 p-8 rounded-2xl border-2 border-blue-200">
+          <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center space-x-2">
+            <span>✍️</span>
+            <span>Leave a Comment</span>
+          </h3>
+          <div className="mb-5">
+            <label className="block text-sm font-bold text-gray-700 mb-2">
               Your Name
             </label>
             <input
               type="text"
               value={userName}
               onChange={(e) => setUserName(e.target.value)}
-              className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-500 font-medium"
               placeholder="Enter your name"
             />
           </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+          <div className="mb-5">
+            <label className="block text-sm font-bold text-gray-700 mb-3">
               Rating
             </label>
             <StarRating value={rating} onChange={setRating} />
           </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+          <div className="mb-6">
+            <label className="block text-sm font-bold text-gray-700 mb-2">
               Your Comment
             </label>
             <textarea
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
-              className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-500 font-medium"
               rows="4"
-              placeholder="Write your comment..."
+              placeholder="Share your thoughts..."
             />
           </div>
           <button
             onClick={handleAddComment}
-            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-semibold transition"
+            className="group w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-xl font-bold hover:shadow-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200"
           >
             Submit Comment
           </button>
@@ -256,28 +262,31 @@ function BlogDetail() {
         <div className="space-y-6">
           {comments.length > 0 ? (
             comments.map(comment => (
-              <div key={comment.id} className="border-b pb-6 last:border-b-0">
-                <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
-                  <span className="font-bold text-gray-900">{comment.userName}</span>
-                  <time className="text-gray-500 text-sm">
+              <div key={comment.id} className="bg-gray-50 border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow">
+                <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+                  <span className="font-bold text-lg text-gray-900 bg-gray-200 px-4 py-1.5 rounded-full">{comment.userName}</span>
+                  <time className="text-gray-600 text-sm font-medium">
                     {new Date(comment.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                   </time>
                 </div>
-                <div className="flex items-center mb-3">
+                <div className="flex items-center mb-4">
                   {[...Array(5)].map((_, i) => (
                     <span
                       key={i}
-                      className={`text-lg ${i < comment.rating ? 'text-yellow-400' : 'text-gray-300'}`}
+                      className={`text-xl ${i < comment.rating ? 'text-yellow-400' : 'text-gray-300'}`}
                     >
                       ★
                     </span>
                   ))}
                 </div>
-                <p className="text-gray-700 leading-relaxed">{comment.content}</p>
+                <p className="text-gray-700 leading-relaxed text-base">{comment.content}</p>
               </div>
             ))
           ) : (
-            <p className="text-gray-500 text-center py-8">No comments yet. Be the first to comment!</p>
+            <div className="text-center py-12 bg-gradient-to-br from-gray-50 to-blue-50 rounded-2xl border-2 border-gray-200 border-dashed">
+              <div className="text-5xl mb-3 opacity-40">💭</div>
+              <p className="text-gray-600 text-lg font-medium">No comments yet. Be the first to comment!</p>
+            </div>
           )}
         </div>
       </div>
