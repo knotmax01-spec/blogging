@@ -102,25 +102,28 @@ function BlogList() {
       </div>
 
       {/* Action Buttons */}
-      <div className="flex gap-4 flex-wrap">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Link
           to="/new"
-          className="flex-1 bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition text-center"
+          className="group bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-4 rounded-xl font-bold hover:shadow-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 text-center flex items-center justify-center space-x-2"
         >
-          ✍️ Write New Post
+          <span className="group-hover:scale-110 transition-transform">✍️</span>
+          <span>Write New Post</span>
         </Link>
         <Link
           to="/library"
-          className="flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition text-center"
+          className="group bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-4 rounded-xl font-bold hover:shadow-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 text-center flex items-center justify-center space-x-2"
         >
-          📚 View Blog Library
+          <span className="group-hover:scale-110 transition-transform">📚</span>
+          <span>View Blog Library</span>
         </Link>
         <button
           onClick={exportLibraryHTML}
           disabled={posts.length === 0}
-          className="flex-1 bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+          className="group bg-gradient-to-r from-purple-500 to-purple-600 text-white px-6 py-4 rounded-xl font-bold hover:shadow-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
         >
-          📥 Export as HTML
+          <span className="group-hover:scale-110 transition-transform">📥</span>
+          <span>Export as HTML</span>
         </button>
       </div>
 
