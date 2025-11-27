@@ -846,30 +846,33 @@ function BlogEditor() {
           </div>
         </div>
         
-        <div className="space-y-2">
+        <div className="space-y-3">
           <button
             onClick={handleSave}
             disabled={isSubmitting}
-            className={`w-full px-4 py-2 rounded font-semibold transition ${
+            className={`w-full px-6 py-3 rounded-xl font-bold transition-all duration-200 text-lg ${
               isSubmitting
-                ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
-                : 'bg-green-500 text-white hover:bg-green-600'
+                ? 'bg-gray-400 text-gray-600 cursor-not-allowed opacity-60'
+                : 'bg-gradient-to-r from-green-500 to-green-600 text-white hover:shadow-lg hover:from-green-600 hover:to-green-700'
             }`}
             aria-label={isEditing ? 'Update and generate HTML' : 'Publish and generate HTML'}
           >
-            {isSubmitting ? 'Publishing...' : (isEditing ? 'Update & Generate HTML' : 'Publish & Generate HTML')}
+            {isSubmitting ? '⏳ Publishing...' : (isEditing ? '✅ Update & Generate HTML' : '🚀 Publish & Generate HTML')}
           </button>
           <button
             onClick={() => setShowPublishOptions(!showPublishOptions)}
-            className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 font-semibold"
+            className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-xl hover:shadow-lg hover:from-blue-600 hover:to-blue-700 font-bold transition-all duration-200"
           >
-            {showPublishOptions ? 'Hide' : 'Show'} Publish Options
+            {showPublishOptions ? '✕ Hide' : '⚙️ Show'} Advanced Options
           </button>
         </div>
 
         {showPublishOptions && (
-          <div className="bg-blue-50 p-4 rounded-lg space-y-3 border border-blue-200">
-            <h3 className="font-semibold text-blue-900">Publish Options</h3>
+          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-2xl border-2 border-blue-200 space-y-4">
+            <h3 className="font-bold text-blue-900 text-lg flex items-center space-x-2">
+              <span>⚙️</span>
+              <span>Export & Publish Options</span>
+            </h3>
             <button
               onClick={() => {
                 const posts = JSON.parse(localStorage.getItem('blog-posts') || '[]');
@@ -884,9 +887,9 @@ function BlogEditor() {
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
               }}
-              className="w-full bg-purple-500 text-white px-3 py-2 rounded hover:bg-purple-600 text-sm"
+              className="w-full group bg-gradient-to-r from-purple-500 to-purple-600 text-white px-4 py-3 rounded-xl hover:shadow-lg hover:from-purple-600 hover:to-purple-700 font-bold text-sm transition-all duration-200"
             >
-              📚 Export Blog Library (All Posts Index)
+              📚 Export Blog Library (Index Page)
             </button>
             <button
               onClick={() => {
@@ -906,13 +909,15 @@ function BlogEditor() {
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
               }}
-              className="w-full bg-indigo-500 text-white px-3 py-2 rounded hover:bg-indigo-600 text-sm"
+              className="w-full group bg-gradient-to-r from-indigo-500 to-indigo-600 text-white px-4 py-3 rounded-xl hover:shadow-lg hover:from-indigo-600 hover:to-indigo-700 font-bold text-sm transition-all duration-200"
             >
               📋 Export Blog Manifest (JSON)
             </button>
-            <p className="text-xs text-gray-600 mt-2">
-              💡 Tip: Export the Blog Library to get an index page listing all your blogs. Download individual blog HTML files from the preview.
-            </p>
+            <div className="bg-white p-4 rounded-lg border border-blue-200 mt-4">
+              <p className="text-xs text-gray-600 leading-relaxed">
+                <strong>💡 Pro Tip:</strong> Export the Blog Library to get a standalone index page listing all your blogs. You can then download individual blog HTML files to host them on a static site.
+              </p>
+            </div>
           </div>
         )}
       </div>
