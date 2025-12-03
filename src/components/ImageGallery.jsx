@@ -133,6 +133,8 @@ function ImageGallery({ images, postId, onImageDelete, onImageSelect }) {
                   src={selectedImage.dataUrl}
                   alt={selectedImage.originalName}
                   className="w-full h-auto rounded-lg border"
+                  loading="lazy"
+                  decoding="async"
                 />
               )}
 
