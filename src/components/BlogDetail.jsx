@@ -204,6 +204,8 @@ function BlogDetail() {
                     alt={alt}
                     {...props}
                     className="max-w-full h-auto rounded-lg shadow-md"
+                    loading="lazy"
+                    decoding="async"
                   />
                 );
               }
