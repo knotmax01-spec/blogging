@@ -146,3 +146,100 @@ export const sanitizeInput = (input) => {
 export const generateValidationMessage = (field, error) => {
   return `${field}: ${error}`;
 };
+
+/**
+ * XSS Protection: Sanitize HTML content to prevent injection attacks
+ */
+export const sanitizeHTML = (html) => {
+  if (typeof html !== 'string') {
+    return '';
+  }
+  const div = document.createElement('div');
+  div.textContent = html;
+  return div.innerHTML;
+};
+
+/**
+ * Sanitize user input for display
+ */
+export const sanitizeUserInput = (input) => {
+  if (typeof input !== 'string') {
+    return '';
+  }
+  return input
+    .trim()
+    .slice(0, 5000)
+    .replace(/javascript:/gi, '')
+    .replace(/on\w+\s*=/gi, '');
+};
+
+/**
+ * Validate and sanitize comment input
+ */
+export const validateComment = (commentData) => {
+  const errors = {};
+
+  if (!commentData.userName || commentData.userName.trim().length === 0) {
+    errors.userName = 'Name is required';
+  } else if (commentData.userName.length > 100) {
+    errors.userName = 'Name must be less than 100 characters';
+  }
+
+  if (!commentData.content || commentData.content.trim().length === 0) {
+    errors.content = 'Comment cannot be empty';
+  } else if (commentData.content.length > 2000) {
+    errors.content = 'Comment must be less than 2000 characters';
+  }
+
+  if (commentData.rating < 0 || commentData.rating > 5) {
+    errors.rating = 'Rating must be between 0 and 5';
+  }
+
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors
+  };
+};
+
+/**
+ * Sanitize blog post data before saving
+ */
+export const sanitizeBlogPost = (post) => {
+  return {
+    ...post,
+    title: sanitizeUserInput(post.title),
+    content: post.content,
+    metaDescription: sanitizeUserInput(post.metaDescription),
+    author: sanitizeUserInput(post.author),
+    category: sanitizeUserInput(post.category),
+    tags: sanitizeUserInput(post.tags),
+    keywords: sanitizeUserInput(post.keywords),
+  };
+};
+
+/**
+ * Validate image file type and size
+ */
+export const validateImageUpload = (file, maxSizeMB = 10) => {
+  const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+  const maxBytes = maxSizeMB * 1024 * 1024;
+
+  const errors = [];
+
+  if (!validTypes.includes(file.type)) {
+    errors.push('Only JPEG, PNG, GIF, and WebP images are allowed');
+  }
+
+  if (file.size > maxBytes) {
+    errors.push(`File size must be less than ${maxSizeMB}MB`);
+  }
+
+  if (!/^[a-zA-Z0-9\-_.() ]+$/.test(file.name)) {
+    errors.push('File name contains invalid characters');
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors
+  };
+};
