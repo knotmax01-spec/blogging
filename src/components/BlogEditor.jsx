@@ -5,7 +5,7 @@ import RichTextEditor from './RichTextEditor';
 import ImageGallery from './ImageGallery';
 import { addBlogToManifest, removeBlogFromManifest } from '../utils/blogManifest';
 import { generateBlogLibraryHTML, exportBlogLibraryAsFile } from '../utils/blogLibraryGenerator';
-import { validatePostData, validateTitle, validateContent, validateMetaDescription, validateUrl } from '../utils/validation';
+import { validatePostData, validateTitle, validateContent, validateMetaDescription, validateUrl, sanitizeBlogPost } from '../utils/validation';
 import { compressImage, generateImageFilename, createImageMetadata, saveImageMetadata, getImageMetadata, saveImageData, getImageData, validateImageFile, formatFileSize } from '../utils/imageManager';
 
 function BlogEditor() {
