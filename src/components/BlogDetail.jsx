@@ -40,19 +40,22 @@ function BlogDetail() {
   }, [id]);
 
   const handleAddComment = () => {
-    if (!userName.trim()) {
-      alert('Please enter your name');
-      return;
-    }
-    if (!newComment.trim()) {
-      alert('Please enter a comment');
+    const validation = validateComment({
+      userName,
+      content: newComment,
+      rating
+    });
+
+    if (!validation.isValid) {
+      const errorMessages = Object.values(validation.errors).join('\n');
+      alert(`Please fix the following:\n\n${errorMessages}`);
       return;
     }
 
     const comment = {
       id: Date.now(),
-      userName,
-      content: newComment,
+      userName: userName.trim(),
+      content: newComment.trim(),
       rating,
       date: new Date().toISOString()
     };
