@@ -92,8 +92,6 @@ function BlogEditor() {
 
         // Add to content with proper markdown
         setContent(prev => `${prev}\n![${file.name}](${imageId})`);
-
-        console.log(`Image "${file.name}" uploaded and compressed to ${formatFileSize(compressed.blob.size)}`);
       } catch (error) {
         console.error('Error processing image:', error);
         alert(`Error processing ${file.name}: ${error.message}`);
