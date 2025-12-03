@@ -21,8 +21,13 @@ class ErrorBoundary extends Component {
       errorInfo,
       errorCount: prevState.errorCount + 1
     }));
-    
-    console.error('Error caught by boundary:', error, errorInfo);
+
+    // Log to error tracking service in production
+    if (process.env.NODE_ENV === 'production' && window.__reportError) {
+      window.__reportError({ error, errorInfo, timestamp: new Date().toISOString() });
+    } else if (process.env.NODE_ENV === 'development') {
+      console.error('Error caught by boundary:', error, errorInfo);
+    }
   }
 
   handleReset = () => {
