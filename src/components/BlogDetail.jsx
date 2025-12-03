@@ -5,6 +5,7 @@ import OptimizedMarkdownRenderer from './OptimizedMarkdownRenderer';
 import { removeBlogFromManifest } from '../utils/blogManifest';
 import { downloadBlogAsHTML } from '../utils/staticSiteExporter';
 import { getImageMetadata, getImageData, deletePostImages } from '../utils/imageManager';
+import { validateComment } from '../utils/validation';
 
 function BlogDetail() {
   const [post, setPost] = useState(null);
