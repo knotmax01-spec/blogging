@@ -61,6 +61,8 @@ function ImageGallery({ images, postId, onImageDelete, onImageSelect }) {
                   src={image.dataUrl}
                   alt={image.originalName}
                   className="w-full h-full object-cover hover:scale-105 transition-transform"
+                  loading="lazy"
+                  decoding="async"
                 />
               ) : (
                 <div className="text-gray-400 text-center">
