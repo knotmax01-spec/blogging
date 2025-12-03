@@ -164,8 +164,6 @@ export const exportBlogHTML = (blog) => {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 
-  // Show instructions
-  console.log('Publishing Instructions:', result.instructions);
   alert(
     `Blog exported successfully!\n\n` +
     `File: ${fileName}\n` +
@@ -173,8 +171,7 @@ export const exportBlogHTML = (blog) => {
     `Next steps:\n` +
     `1. Save the file to: public/published-blogs/${fileName}\n` +
     `2. Update public/blog-manifest.json with the blog metadata\n` +
-    `3. Refresh the Blog Library page\n\n` +
-    `See console for detailed instructions.`
+    `3. Refresh the Blog Library page`
   );
 };
 
