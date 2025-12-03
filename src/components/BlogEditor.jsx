@@ -170,7 +170,7 @@ function BlogEditor() {
       // Just track the image IDs in the post
       const imageIds = images.map(img => img.id);
 
-      const post = {
+      const post = sanitizeBlogPost({
         id: postId,
         title,
         content: content,
@@ -188,7 +188,7 @@ function BlogEditor() {
         imageIds: imageIds,
         date: isEditing ? posts.find(p => p.id === Number(id)).date : new Date().toISOString(),
         lastModified: new Date().toISOString()
-      };
+      });
 
       let updatedPosts;
       if (isEditing) {
