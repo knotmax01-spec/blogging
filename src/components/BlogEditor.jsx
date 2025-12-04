@@ -920,12 +920,12 @@ function BlogEditor() {
         )}
       </div>
       
-      <div className="border-2 border-gray-300 rounded-2xl p-8 bg-white shadow-lg">
+      <div className="border-2 border-teal-300 rounded-2xl p-8 bg-white shadow-lg">
         <div className="flex items-center space-x-3 mb-6">
           <span className="text-3xl">👁️</span>
-          <h2 className="text-3xl font-bold">Live Preview</h2>
+          <h2 className="text-3xl font-bold">Article Preview</h2>
         </div>
-        <div className={`${getPreviewClasses()} bg-gradient-to-br from-gray-50 to-gray-100 p-8 rounded-xl border-2 border-gray-200`}>
+        <div className={`${getPreviewClasses()} bg-gradient-to-br from-teal-50 to-cyan-50 p-8 rounded-xl border-2 border-teal-200`}>
           {title ? (
             <>
               <h1 className="text-4xl font-bold mb-6 text-gray-900">{title}</h1>
