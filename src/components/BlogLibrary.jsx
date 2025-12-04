@@ -96,13 +96,13 @@ function BlogLibrary() {
   return (
     <div className="space-y-8">
       {/* Header Section */}
-      <div className="bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900 text-white rounded-2xl p-12 shadow-2xl border border-blue-400/20">
+      <div className="bg-gradient-to-br from-teal-600 via-cyan-700 to-blue-900 text-white rounded-2xl p-12 shadow-2xl border border-teal-400/20">
         <div className="flex items-start justify-between mb-8">
           <div>
-            <h1 className="text-5xl font-bold mb-3">📚 Blog Library</h1>
-            <p className="text-blue-100 text-lg max-w-xl">Explore all published articles and discover great content. Find what you're looking for.</p>
+            <h1 className="text-5xl font-bold mb-3">📚 Health Articles Library</h1>
+            <p className="text-teal-50 text-lg max-w-xl">Explore comprehensive health articles, wellness guides, and evidence-based medical information. Find your health solutions.</p>
           </div>
-          <div className="text-6xl opacity-30 hidden md:block">📖</div>
+          <div className="text-6xl opacity-30 hidden md:block">⚕️</div>
         </div>
 
         {/* Search and Filter */}
