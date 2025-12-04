@@ -174,11 +174,11 @@ function BlogDetail() {
           <time className="text-gray-600 font-medium bg-gray-100 px-4 py-2 rounded-lg">
             {new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
           </time>
-          <div className="flex items-center space-x-1 bg-blue-100 px-4 py-2 rounded-lg">
-            <span className="text-blue-700 font-medium">{post.readingTime || 5} min read</span>
+          <div className="flex items-center space-x-1 bg-teal-100 px-4 py-2 rounded-lg">
+            <span className="text-teal-700 font-medium">{post.readingTime || 5} min read</span>
           </div>
-          <div className="flex items-center space-x-1 bg-purple-100 px-4 py-2 rounded-lg">
-            <span className="text-purple-700 font-medium">{post.wordCount || 0} words</span>
+          <div className="flex items-center space-x-1 bg-cyan-100 px-4 py-2 rounded-lg">
+            <span className="text-cyan-700 font-medium">{post.wordCount || 0} words</span>
           </div>
           {averageRating !== 'No ratings yet' && (
             <div className="flex items-center space-x-2 bg-yellow-100 px-4 py-2 rounded-lg">
