@@ -257,10 +257,10 @@ function BlogLibrary() {
       <div>
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-4xl font-bold">
-            {selectedCategory ? `${selectedCategory}` : 'All Articles'}
+            {selectedCategory ? `${selectedCategory}` : 'All Health Articles'}
           </h2>
           {filteredPosts.length > 0 && (
-            <span className="text-sm font-bold text-white bg-blue-600 px-4 py-2 rounded-full">
+            <span className="text-sm font-bold text-white bg-teal-600 px-4 py-2 rounded-full">
               {filteredPosts.length} article{filteredPosts.length !== 1 ? 's' : ''}
             </span>
           )}
