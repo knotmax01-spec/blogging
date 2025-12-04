@@ -205,10 +205,10 @@ function BlogLibrary() {
 
       {/* Featured Article */}
       {posts.length > 0 && (
-        <div className="bg-white rounded-2xl shadow-xl overflow-hidden border-2 border-blue-200 hover:shadow-2xl transition-shadow">
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 border-b border-blue-200 flex items-center space-x-3">
-            <span className="text-3xl">✨</span>
-            <h2 className="text-2xl font-bold text-gray-900">Featured Article</h2>
+        <div className="bg-white rounded-2xl shadow-xl overflow-hidden border-2 border-teal-200 hover:shadow-2xl transition-shadow">
+          <div className="bg-gradient-to-r from-teal-50 to-cyan-50 p-6 border-b border-teal-200 flex items-center space-x-3">
+            <span className="text-3xl">⭐</span>
+            <h2 className="text-2xl font-bold text-gray-900">Featured Health Article</h2>
           </div>
           <div className="p-10">
             <Link to={`/post/${posts[0].id}`} className="group">
