@@ -136,21 +136,21 @@ function BlogDetail() {
   return (
     <div className="max-w-4xl mx-auto p-8">
       <div className="flex justify-between items-center mb-10 flex-wrap gap-4">
-        <Link to="/" className="group flex items-center space-x-2 text-blue-600 hover:text-blue-800 font-bold text-lg transition">
+        <Link to="/" className="group flex items-center space-x-2 text-teal-600 hover:text-teal-800 font-bold text-lg transition">
           <span className="group-hover:-translate-x-1 transition-transform">←</span>
           <span>Back</span>
         </Link>
         <div className="flex flex-wrap gap-3 justify-end">
           <button
             onClick={() => downloadBlogAsHTML(post)}
-            className="group flex items-center space-x-2 bg-gradient-to-r from-green-500 to-green-600 text-white px-5 py-2.5 rounded-xl hover:shadow-lg hover:from-green-600 hover:to-green-700 font-bold transition-all duration-200"
+            className="group flex items-center space-x-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-5 py-2.5 rounded-xl hover:shadow-lg hover:from-emerald-600 hover:to-teal-700 font-bold transition-all duration-200"
           >
             <span>📥</span>
             <span>Download</span>
           </button>
           <button
             onClick={handleEdit}
-            className="group flex items-center space-x-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-5 py-2.5 rounded-xl hover:shadow-lg hover:from-blue-600 hover:to-blue-700 font-bold transition-all duration-200"
+            className="group flex items-center space-x-2 bg-gradient-to-r from-teal-500 to-cyan-600 text-white px-5 py-2.5 rounded-xl hover:shadow-lg hover:from-teal-600 hover:to-cyan-700 font-bold transition-all duration-200"
           >
             <span>✏️</span>
             <span>Edit</span>
