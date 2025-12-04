@@ -130,10 +130,10 @@ function BlogList() {
       {/* Recent Posts */}
       <div>
         <div className="flex items-center justify-between mb-8">
-          <h2 className="text-4xl font-bold">Recent Posts</h2>
+          <h2 className="text-4xl font-bold">Latest Health Articles</h2>
           {posts.length > 0 && (
-            <span className="text-sm font-medium text-gray-500 bg-gray-100 px-4 py-2 rounded-full">
-              {posts.length} total posts
+            <span className="text-sm font-medium text-teal-700 bg-teal-100 px-4 py-2 rounded-full">
+              {posts.length} published articles
             </span>
           )}
         </div>
