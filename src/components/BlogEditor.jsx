@@ -885,9 +885,9 @@ function BlogEditor() {
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
               }}
-              className="w-full group bg-gradient-to-r from-purple-500 to-purple-600 text-white px-4 py-3 rounded-xl hover:shadow-lg hover:from-purple-600 hover:to-purple-700 font-bold text-sm transition-all duration-200"
+              className="w-full group bg-gradient-to-r from-blue-500 to-cyan-600 text-white px-4 py-3 rounded-xl hover:shadow-lg hover:from-blue-600 hover:to-cyan-700 font-bold text-sm transition-all duration-200"
             >
-              📚 Export Blog Library (Index Page)
+              📚 Export Health Article Library (Index Page)
             </button>
             <button
               onClick={() => {
@@ -901,19 +901,19 @@ function BlogEditor() {
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = 'blog-manifest.json';
+                a.download = 'health-articles-manifest.json';
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
               }}
-              className="w-full group bg-gradient-to-r from-indigo-500 to-indigo-600 text-white px-4 py-3 rounded-xl hover:shadow-lg hover:from-indigo-600 hover:to-indigo-700 font-bold text-sm transition-all duration-200"
+              className="w-full group bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-4 py-3 rounded-xl hover:shadow-lg hover:from-emerald-600 hover:to-teal-700 font-bold text-sm transition-all duration-200"
             >
-              📋 Export Blog Manifest (JSON)
+              📋 Export Health Articles Manifest (JSON)
             </button>
-            <div className="bg-white p-4 rounded-lg border border-blue-200 mt-4">
+            <div className="bg-white p-4 rounded-lg border border-teal-200 mt-4">
               <p className="text-xs text-gray-600 leading-relaxed">
-                <strong>💡 Pro Tip:</strong> Export the Blog Library to get a standalone index page listing all your blogs. You can then download individual blog HTML files to host them on a static site.
+                <strong>💡 Pro Tip:</strong> Export your health article library to get a standalone index page listing all your articles. You can then download individual article HTML files to host them on a health information website.
               </p>
             </div>
           </div>
