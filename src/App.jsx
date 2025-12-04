@@ -3,6 +3,9 @@ import BlogEditor from './components/BlogEditor';
 import BlogList from './components/BlogList';
 import BlogDetail from './components/BlogDetail';
 import BlogLibrary from './components/BlogLibrary';
+import PrivacyPolicy from './components/PrivacyPolicy';
+import TermsAndConditions from './components/TermsAndConditions';
+import Footer from './components/Footer';
 import ErrorBoundary from './components/ErrorBoundary';
 
 function AppContent() {
