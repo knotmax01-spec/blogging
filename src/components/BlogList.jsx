@@ -192,22 +192,22 @@ function BlogList() {
               <div className="text-center pt-6">
                 <Link
                   to="/library"
-                  className="inline-block text-blue-600 hover:text-blue-800 font-bold text-lg hover:underline transition"
+                  className="inline-block text-teal-600 hover:text-teal-800 font-bold text-lg hover:underline transition"
                 >
-                  View all {posts.length} posts →
+                  View all {posts.length} articles →
                 </Link>
               </div>
             )}
           </div>
         ) : (
-          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-16 text-center border-2 border-blue-200 border-dashed">
-            <div className="text-6xl mb-4 opacity-50">📝</div>
-            <p className="text-gray-700 text-lg mb-6 font-medium">No posts yet. Start creating your first blog post!</p>
+          <div className="bg-gradient-to-br from-teal-50 to-cyan-100 rounded-2xl p-16 text-center border-2 border-teal-200 border-dashed">
+            <div className="text-6xl mb-4 opacity-50">🏥</div>
+            <p className="text-gray-700 text-lg mb-6 font-medium">No health articles yet. Share your wellness insights with your community!</p>
             <Link
               to="/new"
-              className="inline-block bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-3 rounded-xl font-bold hover:shadow-lg transition-all duration-200"
+              className="inline-block bg-gradient-to-r from-teal-600 to-cyan-700 text-white px-8 py-3 rounded-xl font-bold hover:shadow-lg transition-all duration-200"
             >
-              ✨ Create Your First Post
+              📝 Publish Your First Article
             </Link>
           </div>
         )}
