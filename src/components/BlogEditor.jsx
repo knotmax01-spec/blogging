@@ -851,23 +851,23 @@ function BlogEditor() {
             className={`w-full px-6 py-3 rounded-xl font-bold transition-all duration-200 text-lg ${
               isSubmitting
                 ? 'bg-gray-400 text-gray-600 cursor-not-allowed opacity-60'
-                : 'bg-gradient-to-r from-green-500 to-green-600 text-white hover:shadow-lg hover:from-green-600 hover:to-green-700'
+                : 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:shadow-lg hover:from-emerald-600 hover:to-teal-700'
             }`}
             aria-label={isEditing ? 'Update and generate HTML' : 'Publish and generate HTML'}
           >
-            {isSubmitting ? '⏳ Publishing...' : (isEditing ? '✅ Update & Generate HTML' : '🚀 Publish & Generate HTML')}
+            {isSubmitting ? '⏳ Publishing...' : (isEditing ? '✅ Update & Generate HTML' : '🚀 Publish Health Article')}
           </button>
           <button
             onClick={() => setShowPublishOptions(!showPublishOptions)}
-            className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-xl hover:shadow-lg hover:from-blue-600 hover:to-blue-700 font-bold transition-all duration-200"
+            className="w-full bg-gradient-to-r from-teal-500 to-cyan-600 text-white px-6 py-3 rounded-xl hover:shadow-lg hover:from-teal-600 hover:to-cyan-700 font-bold transition-all duration-200"
           >
             {showPublishOptions ? '✕ Hide' : '⚙️ Show'} Advanced Options
           </button>
         </div>
 
         {showPublishOptions && (
-          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-2xl border-2 border-blue-200 space-y-4">
-            <h3 className="font-bold text-blue-900 text-lg flex items-center space-x-2">
+          <div className="bg-gradient-to-br from-teal-50 to-cyan-50 p-6 rounded-2xl border-2 border-teal-200 space-y-4">
+            <h3 className="font-bold text-teal-900 text-lg flex items-center space-x-2">
               <span>⚙️</span>
               <span>Export & Publish Options</span>
             </h3>
