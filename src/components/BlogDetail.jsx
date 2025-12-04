@@ -187,7 +187,7 @@ function BlogDetail() {
             </div>
           )}
           {post.category && (
-            <span className="bg-blue-600 text-white text-xs font-bold px-4 py-2 rounded-full">
+            <span className="bg-teal-600 text-white text-xs font-bold px-4 py-2 rounded-full">
               {post.category}
             </span>
           )}
