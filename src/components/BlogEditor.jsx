@@ -713,8 +713,8 @@ function BlogEditor() {
             id="layout-select"
             value={layout}
             onChange={(e) => setLayout(e.target.value)}
-            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent font-medium bg-white"
-            aria-label="Blog layout style"
+            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent font-medium bg-white"
+            aria-label="Article layout style"
           >
             <option value="default">📄 Default</option>
             <option value="centered">⬜ Centered</option>
