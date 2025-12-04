@@ -11,26 +11,26 @@ function AppContent() {
   const isActive = (path) => location.pathname === path ? 'text-blue-600 font-semibold' : 'text-gray-700';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      <nav className="bg-white shadow-lg sticky top-0 z-40 border-b border-gray-200">
+    <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-50">
+      <nav className="bg-white shadow-lg sticky top-0 z-40 border-b border-teal-100">
         <div className="max-w-6xl mx-auto px-4 py-5 flex justify-between items-center">
           <div className="flex items-center space-x-8">
-            <Link to="/" className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent flex items-center space-x-2 hover:opacity-80 transition">
-              <span className="text-2xl">✍️</span>
-              <span>Blog Generator</span>
+            <Link to="/" className="text-2xl font-bold bg-gradient-to-r from-teal-600 to-cyan-700 bg-clip-text text-transparent flex items-center space-x-2 hover:opacity-80 transition">
+              <span className="text-2xl">⚕️</span>
+              <span>Health Blog</span>
             </Link>
             <div className="flex items-center space-x-8">
-              <Link to="/" className={`text-sm font-medium transition-all duration-200 ${isActive('/') ? 'text-blue-600 border-b-2 border-blue-600 pb-1' : 'text-gray-600 hover:text-blue-600'}`}>
+              <Link to="/" className={`text-sm font-medium transition-all duration-200 ${isActive('/') ? 'text-teal-600 border-b-2 border-teal-600 pb-1' : 'text-gray-600 hover:text-teal-600'}`}>
                 Dashboard
               </Link>
-              <Link to="/library" className={`text-sm font-medium transition-all duration-200 ${isActive('/library') ? 'text-blue-600 border-b-2 border-blue-600 pb-1' : 'text-gray-600 hover:text-blue-600'}`}>
-                📚 Blog Library
+              <Link to="/library" className={`text-sm font-medium transition-all duration-200 ${isActive('/library') ? 'text-teal-600 border-b-2 border-teal-600 pb-1' : 'text-gray-600 hover:text-teal-600'}`}>
+                📚 Article Library
               </Link>
             </div>
           </div>
-          <Link to="/new" className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-5 py-2.5 rounded-lg hover:shadow-lg hover:from-blue-700 hover:to-blue-800 font-semibold transition-all duration-200 text-sm flex items-center space-x-2">
-            <span>✨</span>
-            <span>Create Post</span>
+          <Link to="/new" className="bg-gradient-to-r from-teal-600 to-cyan-700 text-white px-5 py-2.5 rounded-lg hover:shadow-lg hover:from-teal-700 hover:to-cyan-800 font-semibold transition-all duration-200 text-sm flex items-center space-x-2">
+            <span>📝</span>
+            <span>Publish Article</span>
           </Link>
         </div>
       </nav>
