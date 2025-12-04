@@ -28,6 +28,7 @@ export default defineConfig({
     chunkSizeWarningLimit: 1000,
   },
   server: {
+    middlewareMode: false,
     headers: {
       'X-Content-Type-Options': 'nosniff',
       'X-Frame-Options': 'SAMEORIGIN',
@@ -40,10 +41,6 @@ export default defineConfig({
           port: process.env.VITE_HMR_PORT ? parseInt(process.env.VITE_HMR_PORT) : 443,
           protocol: process.env.VITE_HMR_PROTOCOL || 'wss',
         }
-      : {
-          protocol: 'ws',
-          host: 'localhost',
-          port: 5173,
-        },
+      : true,
   },
 });
