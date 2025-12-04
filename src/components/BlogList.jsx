@@ -43,19 +43,19 @@ function BlogList() {
   return (
     <div className="space-y-8">
       {/* Hero Section */}
-      <div className="bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900 text-white rounded-2xl p-12 shadow-2xl border border-blue-400/20">
+      <div className="bg-gradient-to-br from-teal-600 via-cyan-700 to-blue-900 text-white rounded-2xl p-12 shadow-2xl border border-teal-400/20">
         <div className="flex items-start justify-between mb-6">
           <div>
-            <h1 className="text-5xl font-bold mb-3">Welcome to Your Blog Dashboard</h1>
-            <p className="text-blue-100 text-lg max-w-xl">Manage, create, and publish your blog posts with ease. Build your perfect blog platform today.</p>
+            <h1 className="text-5xl font-bold mb-3">Welcome to Your Health Blog Hub</h1>
+            <p className="text-teal-50 text-lg max-w-xl">Share valuable health insights, wellness tips, and medical knowledge with your readers. Empower your community with evidence-based health information.</p>
           </div>
-          <div className="text-6xl opacity-30">📝</div>
+          <div className="text-6xl opacity-30">🏥</div>
         </div>
         <Link
           to="/new"
-          className="inline-block bg-white text-blue-600 px-8 py-3 rounded-lg font-bold hover:shadow-lg hover:scale-105 transition-all duration-200 text-lg"
+          className="inline-block bg-white text-teal-600 px-8 py-3 rounded-lg font-bold hover:shadow-lg hover:scale-105 transition-all duration-200 text-lg"
         >
-          ✨ Create New Post
+          📝 Publish Health Article
         </Link>
       </div>
 
