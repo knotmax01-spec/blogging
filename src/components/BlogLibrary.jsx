@@ -335,14 +335,14 @@ function BlogLibrary() {
             })}
           </div>
         ) : (
-          <div className="text-center py-16 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border-2 border-blue-200 border-dashed">
+          <div className="text-center py-16 bg-gradient-to-br from-teal-50 to-cyan-50 rounded-2xl border-2 border-teal-200 border-dashed">
             <div className="text-6xl mb-4 opacity-40">🔍</div>
             <p className="text-gray-700 text-lg font-medium mb-6">
-              {posts.length === 0 ? 'No posts published yet.' : 'No articles match your search.'}
+              {posts.length === 0 ? 'No health articles published yet.' : 'No articles match your search.'}
             </p>
             {posts.length === 0 && (
-              <Link to="/new" className="inline-block bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-3 rounded-xl font-bold hover:shadow-lg transition-all duration-200">
-                ✨ Create your first post
+              <Link to="/new" className="inline-block bg-gradient-to-r from-teal-600 to-cyan-700 text-white px-8 py-3 rounded-xl font-bold hover:shadow-lg transition-all duration-200">
+                📝 Publish your first health article
               </Link>
             )}
           </div>
