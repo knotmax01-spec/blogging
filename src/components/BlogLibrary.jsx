@@ -242,7 +242,7 @@ function BlogLibrary() {
             </div>
             <Link
               to={`/post/${posts[0].id}`}
-              className="group inline-block bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-3 rounded-xl font-bold hover:shadow-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200"
+              className="group inline-block bg-gradient-to-r from-teal-600 to-cyan-700 text-white px-8 py-3 rounded-xl font-bold hover:shadow-lg hover:from-teal-700 hover:to-cyan-800 transition-all duration-200"
             >
               <span className="flex items-center space-x-2">
                 <span>Read Full Article</span>
