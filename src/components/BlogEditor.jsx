@@ -762,60 +762,60 @@ function BlogEditor() {
               </p>
             </div>
 
-            <div className="bg-white p-5 rounded-xl border-2 border-blue-100">
+            <div className="bg-white p-5 rounded-xl border-2 border-teal-100">
               <label className="block text-sm font-bold text-gray-700 mb-2">
-                Keywords
+                Health Keywords
               </label>
               <input
                 type="text"
                 value={keywords}
                 onChange={(e) => setKeywords(e.target.value)}
-                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                placeholder="keyword1, keyword2, keyword3"
+                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
+                placeholder="health, wellness, nutrition, fitness"
               />
               <p className="text-xs text-gray-500 mt-2">Separate with commas</p>
             </div>
 
-            <div className="bg-white p-5 rounded-xl border-2 border-blue-100">
+            <div className="bg-white p-5 rounded-xl border-2 border-teal-100">
               <label className="block text-sm font-bold text-gray-700 mb-2">
-                Author
+                Author/Healthcare Provider
               </label>
               <input
                 type="text"
                 value={author}
                 onChange={(e) => setAuthor(e.target.value)}
-                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                placeholder="e.g., John Doe"
+                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
+                placeholder="e.g., Dr. Jane Smith, MD"
               />
             </div>
 
-            <div className="bg-white p-5 rounded-xl border-2 border-blue-100">
+            <div className="bg-white p-5 rounded-xl border-2 border-teal-100">
               <label className="block text-sm font-bold text-gray-700 mb-2">
-                Category
+                Health Category
               </label>
               <input
                 type="text"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                placeholder="e.g., Technology"
+                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
+                placeholder="e.g., Nutrition, Mental Health, Fitness"
               />
             </div>
 
-            <div className="bg-white p-5 rounded-xl border-2 border-blue-100">
+            <div className="bg-white p-5 rounded-xl border-2 border-teal-100">
               <label className="block text-sm font-bold text-gray-700 mb-2">
-                Tags
+                Health Topics/Tags
               </label>
               <input
                 type="text"
                 value={tags}
                 onChange={(e) => setTags(e.target.value)}
-                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                placeholder="tag1, tag2, tag3"
+                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
+                placeholder="wellness, prevention, medical"
               />
             </div>
 
-            <div className="bg-white p-5 rounded-xl border-2 border-blue-100">
+            <div className="bg-white p-5 rounded-xl border-2 border-teal-100">
               <label className="block text-sm font-bold text-gray-700 mb-2">
                 Featured Image URL
               </label>
@@ -823,12 +823,12 @@ function BlogEditor() {
                 type="url"
                 value={featuredImage}
                 onChange={(e) => setFeaturedImage(e.target.value)}
-                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                placeholder="https://example.com/image.jpg"
+                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
+                placeholder="https://example.com/health-image.jpg"
               />
             </div>
 
-            <div className="md:col-span-2 bg-white p-5 rounded-xl border-2 border-blue-100">
+            <div className="md:col-span-2 bg-white p-5 rounded-xl border-2 border-teal-100">
               <label className="block text-sm font-bold text-gray-700 mb-2">
                 Canonical URL <span className="text-xs font-normal text-gray-500">(Optional)</span>
               </label>
