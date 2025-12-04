@@ -289,9 +289,9 @@ function BlogDetail() {
               </div>
             ))
           ) : (
-            <div className="text-center py-12 bg-gradient-to-br from-gray-50 to-blue-50 rounded-2xl border-2 border-gray-200 border-dashed">
+            <div className="text-center py-12 bg-gradient-to-br from-teal-50 to-cyan-50 rounded-2xl border-2 border-teal-200 border-dashed">
               <div className="text-5xl mb-3 opacity-40">💭</div>
-              <p className="text-gray-600 text-lg font-medium">No comments yet. Be the first to comment!</p>
+              <p className="text-gray-600 text-lg font-medium">No comments yet. Be the first to share your health insights!</p>
             </div>
           )}
         </div>
