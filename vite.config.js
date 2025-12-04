@@ -34,10 +34,16 @@ export default defineConfig({
       'X-XSS-Protection': '1; mode=block',
       'Referrer-Policy': 'strict-origin-when-cross-origin',
     },
-    hmr: {
-      protocol: 'ws',
-      host: 'localhost',
-      port: 5173,
-    },
+    hmr: process.env.VITE_HMR_HOST
+      ? {
+          host: process.env.VITE_HMR_HOST,
+          port: process.env.VITE_HMR_PORT ? parseInt(process.env.VITE_HMR_PORT) : 443,
+          protocol: process.env.VITE_HMR_PROTOCOL || 'wss',
+        }
+      : {
+          protocol: 'ws',
+          host: 'localhost',
+          port: 5173,
+        },
   },
 });
