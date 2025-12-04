@@ -283,7 +283,7 @@ function BlogLibrary() {
                     <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
                       <div className="flex gap-2 items-center flex-wrap">
                         {post.category && (
-                          <span className="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full">
+                          <span className="bg-teal-100 text-teal-800 text-xs font-bold px-3 py-1 rounded-full">
                             {post.category}
                           </span>
                         )}
