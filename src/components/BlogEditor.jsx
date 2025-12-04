@@ -836,8 +836,8 @@ function BlogEditor() {
                 type="url"
                 value={canonicalUrl}
                 onChange={(e) => setCanonicalUrl(e.target.value)}
-                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                placeholder="https://yourdomain.com/blog/post-title"
+                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
+                placeholder="https://yourdomain.com/health/article-title"
               />
               <p className="text-xs text-gray-500 mt-2">Leave empty to auto-generate</p>
             </div>
