@@ -222,10 +222,10 @@ function BlogDetail() {
           <h2 className="text-3xl font-bold">Comments <span className="text-lg text-gray-500">({comments.length})</span></h2>
         </div>
 
-        <div className="mb-10 bg-gradient-to-br from-blue-50 to-indigo-50 p-8 rounded-2xl border-2 border-blue-200">
+        <div className="mb-10 bg-gradient-to-br from-teal-50 to-cyan-50 p-8 rounded-2xl border-2 border-teal-200">
           <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center space-x-2">
             <span>✍️</span>
-            <span>Leave a Comment</span>
+            <span>Share Your Health Insights</span>
           </h3>
           <div className="mb-5">
             <label className="block text-sm font-bold text-gray-700 mb-2">
@@ -235,13 +235,13 @@ function BlogDetail() {
               type="text"
               value={userName}
               onChange={(e) => setUserName(e.target.value)}
-              className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-500 font-medium"
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent placeholder-gray-500 font-medium"
               placeholder="Enter your name"
             />
           </div>
           <div className="mb-5">
             <label className="block text-sm font-bold text-gray-700 mb-3">
-              Rating
+              Article Rating
             </label>
             <StarRating value={rating} onChange={setRating} />
           </div>
@@ -252,14 +252,14 @@ function BlogDetail() {
             <textarea
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
-              className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-500 font-medium"
+              className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent placeholder-gray-500 font-medium"
               rows="4"
-              placeholder="Share your thoughts..."
+              placeholder="Share your health experience or feedback..."
             />
           </div>
           <button
             onClick={handleAddComment}
-            className="group w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-xl font-bold hover:shadow-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200"
+            className="group w-full bg-gradient-to-r from-teal-600 to-cyan-700 text-white px-6 py-3 rounded-xl font-bold hover:shadow-lg hover:from-teal-700 hover:to-cyan-800 transition-all duration-200"
           >
             Submit Comment
           </button>
