@@ -105,22 +105,22 @@ function BlogList() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Link
           to="/new"
-          className="group bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-4 rounded-xl font-bold hover:shadow-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 text-center flex items-center justify-center space-x-2"
+          className="group bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-6 py-4 rounded-xl font-bold hover:shadow-lg hover:from-emerald-600 hover:to-teal-700 transition-all duration-200 text-center flex items-center justify-center space-x-2"
         >
-          <span className="group-hover:scale-110 transition-transform">✍️</span>
-          <span>Write New Post</span>
+          <span className="group-hover:scale-110 transition-transform">📝</span>
+          <span>Write Health Article</span>
         </Link>
         <Link
           to="/library"
-          className="group bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-4 rounded-xl font-bold hover:shadow-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 text-center flex items-center justify-center space-x-2"
+          className="group bg-gradient-to-r from-teal-500 to-cyan-600 text-white px-6 py-4 rounded-xl font-bold hover:shadow-lg hover:from-teal-600 hover:to-cyan-700 transition-all duration-200 text-center flex items-center justify-center space-x-2"
         >
           <span className="group-hover:scale-110 transition-transform">📚</span>
-          <span>View Blog Library</span>
+          <span>Browse Articles</span>
         </Link>
         <button
           onClick={exportLibraryHTML}
           disabled={posts.length === 0}
-          className="group bg-gradient-to-r from-purple-500 to-purple-600 text-white px-6 py-4 rounded-xl font-bold hover:shadow-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+          className="group bg-gradient-to-r from-blue-500 to-cyan-600 text-white px-6 py-4 rounded-xl font-bold hover:shadow-lg hover:from-blue-600 hover:to-cyan-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
         >
           <span className="group-hover:scale-110 transition-transform">📥</span>
           <span>Export as HTML</span>
