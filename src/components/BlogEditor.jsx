@@ -737,24 +737,24 @@ function BlogEditor() {
         </div>
         
         {/* SEO Section */}
-        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-8 rounded-2xl border-2 border-blue-200 space-y-6">
-          <h3 className="text-2xl font-bold text-blue-900 flex items-center space-x-2">
+        <div className="bg-gradient-to-br from-teal-50 to-cyan-50 p-8 rounded-2xl border-2 border-teal-200 space-y-6">
+          <h3 className="text-2xl font-bold text-teal-900 flex items-center space-x-2">
             <span>🔍</span>
             <span>SEO & Metadata</span>
           </h3>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <div className="bg-white p-5 rounded-xl border-2 border-blue-100">
+            <div className="bg-white p-5 rounded-xl border-2 border-teal-100">
               <label className="block text-sm font-bold text-gray-700 mb-2">
                 Meta Description
               </label>
               <textarea
                 value={metaDescription}
                 onChange={(e) => setMetaDescription(e.target.value)}
-                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
                 rows="3"
                 maxLength="160"
-                placeholder="Brief description for search engines..."
+                placeholder="Brief health article summary for search engines..."
               />
               <p className="text-xs text-gray-500 mt-2 flex justify-between">
                 <span>Used for SEO preview</span>
