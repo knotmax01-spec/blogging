@@ -214,35 +214,35 @@ function BlogList() {
       </div>
 
       {/* Tips Section */}
-      <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-2xl p-8 shadow-sm">
+      <div className="bg-gradient-to-br from-teal-50 to-cyan-50 border-2 border-teal-200 rounded-2xl p-8 shadow-sm">
         <div className="flex items-center space-x-3 mb-6">
           <span className="text-3xl">💡</span>
-          <h3 className="text-2xl font-bold text-blue-900">Pro Tips for Success</h3>
+          <h3 className="text-2xl font-bold text-teal-900">Health Content Best Practices</h3>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="flex items-start space-x-3 bg-white p-4 rounded-lg border border-blue-100">
-            <span className="text-xl flex-shrink-0">📁</span>
-            <p className="text-gray-700 font-medium">Use categories and tags to organize your content</p>
+          <div className="flex items-start space-x-3 bg-white p-4 rounded-lg border border-teal-100">
+            <span className="text-xl flex-shrink-0">🏥</span>
+            <p className="text-gray-700 font-medium">Organize articles by health categories (Wellness, Nutrition, Mental Health, etc.)</p>
           </div>
-          <div className="flex items-start space-x-3 bg-white p-4 rounded-lg border border-blue-100">
-            <span className="text-xl flex-shrink-0">🖼️</span>
-            <p className="text-gray-700 font-medium">Add featured images to make posts more attractive</p>
+          <div className="flex items-start space-x-3 bg-white p-4 rounded-lg border border-teal-100">
+            <span className="text-xl flex-shrink-0">✓</span>
+            <p className="text-gray-700 font-medium">Cite medical sources and evidence-based information</p>
           </div>
-          <div className="flex items-start space-x-3 bg-white p-4 rounded-lg border border-blue-100">
-            <span className="text-xl flex-shrink-0">📝</span>
-            <p className="text-gray-700 font-medium">Write descriptive meta descriptions for better SEO</p>
+          <div className="flex items-start space-x-3 bg-white p-4 rounded-lg border border-teal-100">
+            <span className="text-xl flex-shrink-0">📋</span>
+            <p className="text-gray-700 font-medium">Use clear tags for easy health topic discovery</p>
           </div>
-          <div className="flex items-start space-x-3 bg-white p-4 rounded-lg border border-blue-100">
+          <div className="flex items-start space-x-3 bg-white p-4 rounded-lg border border-teal-100">
             <span className="text-xl flex-shrink-0">💬</span>
-            <p className="text-gray-700 font-medium">Enable reader comments to build community engagement</p>
+            <p className="text-gray-700 font-medium">Engage readers with health discussions and wellness tips</p>
           </div>
-          <div className="flex items-start space-x-3 bg-white p-4 rounded-lg border border-blue-100">
-            <span className="text-xl flex-shrink-0">📚</span>
-            <p className="text-gray-700 font-medium">Export your blog library as a standalone HTML index</p>
+          <div className="flex items-start space-x-3 bg-white p-4 rounded-lg border border-teal-100">
+            <span className="text-xl flex-shrink-0">📊</span>
+            <p className="text-gray-700 font-medium">Share comprehensive guides on health and wellness topics</p>
           </div>
-          <div className="flex items-start space-x-3 bg-white p-4 rounded-lg border border-blue-100">
+          <div className="flex items-start space-x-3 bg-white p-4 rounded-lg border border-teal-100">
             <span className="text-xl flex-shrink-0">📥</span>
-            <p className="text-gray-700 font-medium">Download individual blog posts as HTML files</p>
+            <p className="text-gray-700 font-medium">Export your health knowledge base as a reference site</p>
           </div>
         </div>
       </div>
