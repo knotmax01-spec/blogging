@@ -14,7 +14,7 @@ function AppContent() {
   const isActive = (path) => location.pathname === path ? 'text-teal-600 font-semibold' : 'text-gray-700';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-50">
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-teal-50 to-cyan-50">
       <nav className="bg-white shadow-lg sticky top-0 z-40 border-b border-teal-100">
         <div className="max-w-6xl mx-auto px-4 py-5 flex justify-between items-center">
           <div className="flex items-center space-x-8">
@@ -38,15 +38,21 @@ function AppContent() {
         </div>
       </nav>
 
-      <div className="max-w-6xl mx-auto p-4">
-        <Routes>
-          <Route path="/" element={<BlogList />} />
-          <Route path="/library" element={<BlogLibrary />} />
-          <Route path="/new" element={<BlogEditor />} />
-          <Route path="/edit/:id" element={<BlogEditor />} />
-          <Route path="/post/:id" element={<BlogDetail />} />
-        </Routes>
+      <div className="flex-grow">
+        <div className="max-w-6xl mx-auto p-4">
+          <Routes>
+            <Route path="/" element={<BlogList />} />
+            <Route path="/library" element={<BlogLibrary />} />
+            <Route path="/new" element={<BlogEditor />} />
+            <Route path="/edit/:id" element={<BlogEditor />} />
+            <Route path="/post/:id" element={<BlogDetail />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<TermsAndConditions />} />
+          </Routes>
+        </div>
       </div>
+
+      <Footer />
     </div>
   );
 }
