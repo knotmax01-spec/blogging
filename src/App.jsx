@@ -11,7 +11,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 function AppContent() {
   const location = useLocation();
 
-  const isActive = (path) => location.pathname === path ? 'text-blue-600 font-semibold' : 'text-gray-700';
+  const isActive = (path) => location.pathname === path ? 'text-teal-600 font-semibold' : 'text-gray-700';
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-teal-50 to-cyan-50">
