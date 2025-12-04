@@ -273,9 +273,9 @@ function BlogLibrary() {
                 <Link
                   key={post.id}
                   to={`/post/${post.id}`}
-                  className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-200 overflow-hidden border border-gray-200 group flex flex-col h-full hover:border-blue-300"
+                  className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-200 overflow-hidden border border-gray-200 group flex flex-col h-full hover:border-teal-300"
                 >
-                  <div className="bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 h-48 flex items-center justify-center text-white text-6xl font-bold relative overflow-hidden group-hover:scale-105 transition-transform">
+                  <div className="bg-gradient-to-br from-teal-500 via-cyan-600 to-blue-600 h-48 flex items-center justify-center text-white text-6xl font-bold relative overflow-hidden group-hover:scale-105 transition-transform">
                     {post.title.charAt(0).toUpperCase()}
                     <div className="absolute inset-0 bg-black/10 group-hover:bg-black/5 transition"></div>
                   </div>
