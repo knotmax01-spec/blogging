@@ -30,6 +30,9 @@ function AppContent() {
               <Link to="/library" className={`text-sm font-medium transition-all duration-200 ${isActive('/library') ? 'text-teal-600 border-b-2 border-teal-600 pb-1' : 'text-gray-600 hover:text-teal-600'}`}>
                 📚 Article Library
               </Link>
+              <Link to="/admin" className={`text-sm font-medium transition-all duration-200 ${isActive('/admin') ? 'text-teal-600 border-b-2 border-teal-600 pb-1' : 'text-gray-600 hover:text-teal-600'}`}>
+                ⚙️ AI Admin
+              </Link>
             </div>
           </div>
           <Link to="/new" className="bg-gradient-to-r from-teal-600 to-cyan-700 text-white px-5 py-2.5 rounded-lg hover:shadow-lg hover:from-teal-700 hover:to-cyan-800 font-semibold transition-all duration-200 text-sm flex items-center space-x-2">
