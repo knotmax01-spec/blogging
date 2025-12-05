@@ -42,5 +42,12 @@ export default defineConfig({
           protocol: process.env.VITE_HMR_PROTOCOL || 'wss',
         }
       : true,
+    proxy: {
+      '/api': {
+        target: process.env.VITE_API_PROXY || 'http://localhost:3001',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '/api'),
+      },
+    },
   },
 });
