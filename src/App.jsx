@@ -5,6 +5,7 @@ import BlogDetail from './components/BlogDetail';
 import BlogLibrary from './components/BlogLibrary';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import TermsAndConditions from './components/TermsAndConditions';
+import AdminDashboard from './components/AdminDashboard';
 import Footer from './components/Footer';
 import ErrorBoundary from './components/ErrorBoundary';
 
