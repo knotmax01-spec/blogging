@@ -50,6 +50,7 @@ function AppContent() {
             <Route path="/new" element={<BlogEditor />} />
             <Route path="/edit/:id" element={<BlogEditor />} />
             <Route path="/post/:id" element={<BlogDetail />} />
+            <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<TermsAndConditions />} />
           </Routes>
