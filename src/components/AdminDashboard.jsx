@@ -170,10 +170,9 @@ function AdminDashboard() {
 
       {/* Manual Triggers */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <button
+        <div
+          className="bg-white rounded-xl shadow-lg p-6 border-2 border-teal-200 hover:border-teal-400 hover:shadow-xl transition cursor-pointer"
           onClick={handleTriggerAnalysis}
-          disabled={isAnalyzing}
-          className="bg-white rounded-xl shadow-lg p-6 border-2 border-teal-200 hover:border-teal-400 hover:shadow-xl transition disabled:opacity-50"
         >
           <div className="flex items-center space-x-4">
             <div className="text-4xl">📊</div>
@@ -189,12 +188,11 @@ function AdminDashboard() {
               {isAnalyzing ? '⏳' : '▶️'}
             </button>
           </div>
-        </button>
+        </div>
 
-        <button
+        <div
+          className="bg-white rounded-xl shadow-lg p-6 border-2 border-teal-200 hover:border-teal-400 hover:shadow-xl transition cursor-pointer disabled:opacity-50"
           onClick={handleGeneratePost}
-          disabled={isGenerating || pendingTopics.length === 0}
-          className="bg-white rounded-xl shadow-lg p-6 border-2 border-teal-200 hover:border-teal-400 hover:shadow-xl transition disabled:opacity-50"
         >
           <div className="flex items-center space-x-4">
             <div className="text-4xl">✍️</div>
@@ -210,7 +208,7 @@ function AdminDashboard() {
               {isGenerating ? '⏳' : '▶️'}
             </button>
           </div>
-        </button>
+        </div>
       </div>
 
       {/* Trending Topics */}
