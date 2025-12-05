@@ -5,8 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:backend": "cd server && npm run dev",
+    "dev-all": "concurrently \"npm run dev\" \"npm run dev:backend\"",
+    "server": "cd server && npm start",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "setup-backend": "cd server && npm install"
   },
   "dependencies": {
     "@tailwindcss/typography": "^0.5.10",
