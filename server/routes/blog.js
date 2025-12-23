@@ -1,5 +1,6 @@
 import express from 'express';
 import BlogPost from '../models/BlogPost.js';
+import { publishBlogHTML } from '../utils/manifestManager.js';
 
 const router = express.Router();
 
@@ -138,6 +139,34 @@ router.get('/stats/summary', async (req, res) => {
       categories,
       avgWordCount: avgWordCount[0]?.avg || 0,
     });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Publish blog post HTML and update manifest
+router.post('/publish', async (req, res) => {
+  try {
+    const { title, slug, content, author, category, tags, metaDescription, excerpt } = req.body;
+
+    if (!title || !slug || !content) {
+      return res.status(400).json({
+        error: 'Missing required fields: title, slug, content',
+      });
+    }
+
+    const result = await publishBlogHTML({
+      title,
+      slug,
+      content,
+      author,
+      category,
+      tags,
+      metaDescription,
+      excerpt,
+    });
+
+    res.json(result);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
