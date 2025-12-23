@@ -5,8 +5,18 @@ import mongoose from 'mongoose';
 import blogRoutes from './routes/blog.js';
 import adminRoutes from './routes/admin.js';
 import { initializeScheduler } from './utils/scheduler.js';
+import { validateRequiredEnvVars, validateAIIntegrations } from './utils/envValidator.js';
 
 dotenv.config();
+
+// Validate environment configuration early
+try {
+  validateRequiredEnvVars();
+  validateAIIntegrations();
+} catch (error) {
+  console.error('Environment validation failed:', error.message);
+  process.exit(1);
+}
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -56,9 +66,14 @@ app.use('/api/admin', adminRoutes);
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error('Error:', err);
-  res.status(500).json({
-    error: err.message,
+  const correlationId = req.id || Math.random().toString(36).substring(7);
+
+  res.status(err.status || 500).json({
+    error: process.env.NODE_ENV === 'production'
+      ? 'Internal server error'
+      : err.message,
     status: 'error',
+    correlationId,
   });
 });
 
