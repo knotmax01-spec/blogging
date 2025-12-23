@@ -7,6 +7,7 @@ import { addBlogToManifest, removeBlogFromManifest } from '../utils/blogManifest
 import { generateBlogLibraryHTML, exportBlogLibraryAsFile } from '../utils/blogLibraryGenerator';
 import { validatePostData, validateTitle, validateContent, validateMetaDescription, validateUrl, sanitizeBlogPost } from '../utils/validation';
 import { compressImage, generateImageFilename, createImageMetadata, saveImageMetadata, getImageMetadata, saveImageData, getImageData, validateImageFile, formatFileSize } from '../utils/imageManager';
+import { blogAPI } from '../services/api';
 
 function BlogEditor() {
   const [title, setTitle] = useState('');
@@ -31,24 +32,45 @@ function BlogEditor() {
 
   useEffect(() => {
     if (isEditing) {
-      const posts = JSON.parse(localStorage.getItem('blog-posts') || '[]');
-      const post = posts.find(p => p.id === Number(id));
-      if (post) {
-        setTitle(post.title);
-        setContent(post.content);
-        setMetaDescription(post.metaDescription || '');
-        setKeywords(post.keywords || '');
-        setAuthor(post.author || '');
-        setCategory(post.category || '');
-        setTags(post.tags || '');
-        setFeaturedImage(post.featuredImage || '');
-        setCanonicalUrl(post.canonicalUrl || '');
-        setLayout(post.layout || 'default');
+      // Try to load from server first, fallback to localStorage
+      const loadPost = async () => {
+        try {
+          const post = await blogAPI.getPostById(id);
+          setTitle(post.title);
+          setContent(post.content);
+          setMetaDescription(post.metaDescription || '');
+          setKeywords(post.keywords || '');
+          setAuthor(post.author || '');
+          setCategory(post.category || '');
+          setTags(post.tags || '');
+          setFeaturedImage(post.featuredImage || '');
+          setCanonicalUrl(post.canonicalUrl || '');
+          setLayout(post.layout || 'default');
+        } catch (error) {
+          // Fallback to localStorage for backward compatibility
+          console.warn('Could not load post from server, trying localStorage:', error.message);
+          const posts = JSON.parse(localStorage.getItem('blog-posts') || '[]');
+          const post = posts.find(p => p.id === Number(id));
+          if (post) {
+            setTitle(post.title);
+            setContent(post.content);
+            setMetaDescription(post.metaDescription || '');
+            setKeywords(post.keywords || '');
+            setAuthor(post.author || '');
+            setCategory(post.category || '');
+            setTags(post.tags || '');
+            setFeaturedImage(post.featuredImage || '');
+            setCanonicalUrl(post.canonicalUrl || '');
+            setLayout(post.layout || 'default');
+          }
+        }
 
         // Load images using new imageManager
         const imageMetadata = getImageMetadata(Number(id)) || [];
         setImages(imageMetadata);
-      }
+      };
+
+      loadPost();
     }
   }, [id, isEditing]);
 
