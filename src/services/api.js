@@ -44,7 +44,22 @@ export const blogAPI = {
     const response = await fetch(`${API_BASE_URL}/blog`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(postData),
+      body: JSON.stringify({
+        title: postData.title,
+        slug: postData.slug,
+        content: postData.content,
+        metaDescription: postData.metaDescription,
+        keywords: postData.keywords,
+        author: postData.author,
+        category: postData.category,
+        tags: postData.tags,
+        featuredImage: postData.featuredImage,
+        canonicalUrl: postData.canonicalUrl,
+        wordCount: postData.wordCount,
+        readingTime: postData.readingTime,
+        isPublished: postData.isPublished || false,
+        isAIGenerated: false,
+      }),
     });
     if (!response.ok) throw new Error('Failed to create post');
     return response.json();
@@ -55,9 +70,43 @@ export const blogAPI = {
     const response = await fetch(`${API_BASE_URL}/blog/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(postData),
+      body: JSON.stringify({
+        title: postData.title,
+        slug: postData.slug,
+        content: postData.content,
+        metaDescription: postData.metaDescription,
+        keywords: postData.keywords,
+        author: postData.author,
+        category: postData.category,
+        tags: postData.tags,
+        featuredImage: postData.featuredImage,
+        canonicalUrl: postData.canonicalUrl,
+        wordCount: postData.wordCount,
+        readingTime: postData.readingTime,
+        isPublished: postData.isPublished || false,
+      }),
     });
     if (!response.ok) throw new Error('Failed to update post');
+    return response.json();
+  },
+
+  // Publish blog post HTML and update manifest
+  publishPost: async (postData) => {
+    const response = await fetch(`${API_BASE_URL}/blog/publish`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title: postData.title,
+        slug: postData.slug,
+        content: postData.content,
+        author: postData.author,
+        category: postData.category,
+        tags: postData.tags,
+        metaDescription: postData.metaDescription,
+        excerpt: postData.excerpt,
+      }),
+    });
+    if (!response.ok) throw new Error('Failed to publish post');
     return response.json();
   },
 
