@@ -208,23 +208,24 @@ function RichTextEditor({ content, onChange }) {
   };
 
   return (
-    <div className="border rounded-lg overflow-hidden">
+    <div className="border-2 border-gray-300 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow bg-white">
       {/* Toolbar */}
-      <div className="bg-gray-50 border-b p-2 flex flex-wrap items-center gap-1">
+      <div className="bg-gradient-to-r from-gray-50 to-blue-50 border-b-2 border-gray-200 p-3 flex flex-wrap items-center gap-2">
         {formatButtons.map((button, index) => {
           if (button.type === 'separator') {
-            return <div key={index} className="w-px h-6 bg-gray-300 mx-1" />;
+            return <div key={index} className="w-px h-7 bg-gray-300 mx-1" />;
           }
-          
+
           const Icon = button.icon;
           return (
             <button
               key={index}
               onClick={button.action}
               title={button.title}
-              className="p-2 rounded hover:bg-gray-200 transition-colors flex items-center justify-center"
+              className="p-2.5 rounded-lg hover:bg-blue-100 hover:text-blue-600 transition-all duration-150 flex items-center justify-center text-gray-700 hover:shadow-sm"
+              aria-label={button.title}
             >
-              <Icon size={16} />
+              <Icon size={18} />
             </button>
           );
         })}
@@ -236,54 +237,59 @@ function RichTextEditor({ content, onChange }) {
         value={content}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={handleKeyDown}
-        className="w-full h-[400px] p-4 font-mono text-sm resize-none focus:outline-none"
+        className="w-full h-[400px] p-5 font-mono text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-inset bg-white"
         placeholder="Start writing your post... Use the toolbar above for formatting or keyboard shortcuts."
+        spellCheck="true"
       />
 
       {/* Link Dialog */}
       {showLinkDialog && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-            <h3 className="text-lg font-bold mb-4">Insert Link</h3>
-            <div className="space-y-4">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md border border-gray-200">
+            <h3 className="text-2xl font-bold mb-6 text-gray-900 flex items-center space-x-2">
+              <span>🔗</span>
+              <span>Insert Link</span>
+            </h3>
+            <div className="space-y-5">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-bold text-gray-700 mb-2">
                   Link Text
                 </label>
                 <input
                   type="text"
                   value={linkText}
                   onChange={(e) => setLinkText(e.target.value)}
-                  className="w-full p-2 border rounded"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-500 font-medium transition"
                   placeholder="Enter link text"
+                  autoFocus
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-bold text-gray-700 mb-2">
                   URL
                 </label>
                 <input
                   type="url"
                   value={linkUrl}
                   onChange={(e) => setLinkUrl(e.target.value)}
-                  className="w-full p-2 border rounded"
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-500 font-medium transition"
                   placeholder="https://example.com"
                 />
               </div>
-              <div className="flex justify-end space-x-2">
+              <div className="flex justify-end gap-3 pt-4">
                 <button
                   onClick={() => {
                     setShowLinkDialog(false);
                     setLinkText('');
                     setLinkUrl('');
                   }}
-                  className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded"
+                  className="px-6 py-2.5 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-semibold transition-all duration-200"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={insertLink}
-                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg font-semibold hover:shadow-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200"
                 >
                   Insert Link
                 </button>
@@ -294,18 +300,20 @@ function RichTextEditor({ content, onChange }) {
       )}
 
       {/* Keyboard Shortcuts Help */}
-      <div className="bg-gray-50 border-t p-2 text-xs text-gray-600">
-        <details>
-          <summary className="cursor-pointer hover:text-gray-800">Keyboard Shortcuts</summary>
-          <div className="mt-2 grid grid-cols-2 gap-2">
-            <div><kbd className="bg-gray-200 px-1 rounded">Ctrl+B</kbd> Bold</div>
-            <div><kbd className="bg-gray-200 px-1 rounded">Ctrl+I</kbd> Italic</div>
-            <div><kbd className="bg-gray-200 px-1 rounded">Ctrl+U</kbd> Underline</div>
-            <div><kbd className="bg-gray-200 px-1 rounded">Ctrl+K</kbd> Link</div>
-            <div><kbd className="bg-gray-200 px-1 rounded">Ctrl+1</kbd> Heading 1</div>
-            <div><kbd className="bg-gray-200 px-1 rounded">Ctrl+2</kbd> Heading 2</div>
-            <div><kbd className="bg-gray-200 px-1 rounded">Tab</kbd> Indent</div>
-            <div><kbd className="bg-gray-200 px-1 rounded">Shift+Tab</kbd> Unindent</div>
+      <div className="bg-gradient-to-r from-gray-50 to-blue-50 border-t-2 border-gray-200 p-4 text-xs text-gray-700">
+        <details className="cursor-pointer">
+          <summary className="font-bold text-gray-800 hover:text-blue-600 transition flex items-center space-x-2">
+            <span>⌨️ Keyboard Shortcuts</span>
+          </summary>
+          <div className="mt-3 grid grid-cols-2 gap-3">
+            <div className="flex items-center space-x-2"><kbd className="bg-white border border-gray-300 px-2 py-1 rounded font-mono text-xs font-semibold">Ctrl+B</kbd> <span>Bold</span></div>
+            <div className="flex items-center space-x-2"><kbd className="bg-white border border-gray-300 px-2 py-1 rounded font-mono text-xs font-semibold">Ctrl+I</kbd> <span>Italic</span></div>
+            <div className="flex items-center space-x-2"><kbd className="bg-white border border-gray-300 px-2 py-1 rounded font-mono text-xs font-semibold">Ctrl+U</kbd> <span>Underline</span></div>
+            <div className="flex items-center space-x-2"><kbd className="bg-white border border-gray-300 px-2 py-1 rounded font-mono text-xs font-semibold">Ctrl+K</kbd> <span>Link</span></div>
+            <div className="flex items-center space-x-2"><kbd className="bg-white border border-gray-300 px-2 py-1 rounded font-mono text-xs font-semibold">Ctrl+1</kbd> <span>Heading 1</span></div>
+            <div className="flex items-center space-x-2"><kbd className="bg-white border border-gray-300 px-2 py-1 rounded font-mono text-xs font-semibold">Ctrl+2</kbd> <span>Heading 2</span></div>
+            <div className="flex items-center space-x-2"><kbd className="bg-white border border-gray-300 px-2 py-1 rounded font-mono text-xs font-semibold">Tab</kbd> <span>Indent</span></div>
+            <div className="flex items-center space-x-2"><kbd className="bg-white border border-gray-300 px-2 py-1 rounded font-mono text-xs font-semibold">Shift+Tab</kbd> <span>Unindent</span></div>
           </div>
         </details>
       </div>

@@ -1,7 +1,13 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import RichTextEditor from './RichTextEditor';
+import ImageGallery from './ImageGallery';
+import { addBlogToManifest, removeBlogFromManifest } from '../utils/blogManifest';
+import { generateBlogLibraryHTML, exportBlogLibraryAsFile } from '../utils/blogLibraryGenerator';
+import { validatePostData, validateTitle, validateContent, validateMetaDescription, validateUrl, sanitizeBlogPost } from '../utils/validation';
+import { compressImage, generateImageFilename, createImageMetadata, saveImageMetadata, getImageMetadata, saveImageData, getImageData, validateImageFile, formatFileSize } from '../utils/imageManager';
+import { blogAPI } from '../services/api';
 
 function BlogEditor() {
   const [title, setTitle] = useState('');
@@ -16,6 +22,9 @@ function BlogEditor() {
   const [images, setImages] = useState([]);
   const [layout, setLayout] = useState('default');
   const [isDragging, setIsDragging] = useState(false);
+  const [showPublishOptions, setShowPublishOptions] = useState(false);
+  const [validationErrors, setValidationErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const dropZoneRef = useRef(null);
   const navigate = useNavigate();
   const { id } = useParams();
@@ -23,90 +32,142 @@ function BlogEditor() {
 
   useEffect(() => {
     if (isEditing) {
-      const posts = JSON.parse(localStorage.getItem('blog-posts') || '[]');
-      const post = posts.find(p => p.id === Number(id));
-      if (post) {
-        setTitle(post.title);
-        setContent(post.content);
-        setMetaDescription(post.metaDescription || '');
-        setKeywords(post.keywords || '');
-        setAuthor(post.author || '');
-        setCategory(post.category || '');
-        setTags(post.tags || '');
-        setFeaturedImage(post.featuredImage || '');
-        setCanonicalUrl(post.canonicalUrl || '');
-        setLayout(post.layout || 'default');
-      }
+      // Try to load from server first, fallback to localStorage
+      const loadPost = async () => {
+        try {
+          const post = await blogAPI.getPostById(id);
+          setTitle(post.title);
+          setContent(post.content);
+          setMetaDescription(post.metaDescription || '');
+          setKeywords(post.keywords || '');
+          setAuthor(post.author || '');
+          setCategory(post.category || '');
+          setTags(post.tags || '');
+          setFeaturedImage(post.featuredImage || '');
+          setCanonicalUrl(post.canonicalUrl || '');
+          setLayout(post.layout || 'default');
+        } catch (error) {
+          // Fallback to localStorage for backward compatibility
+          console.warn('Could not load post from server, trying localStorage:', error.message);
+          const posts = JSON.parse(localStorage.getItem('blog-posts') || '[]');
+          const post = posts.find(p => p.id === Number(id));
+          if (post) {
+            setTitle(post.title);
+            setContent(post.content);
+            setMetaDescription(post.metaDescription || '');
+            setKeywords(post.keywords || '');
+            setAuthor(post.author || '');
+            setCategory(post.category || '');
+            setTags(post.tags || '');
+            setFeaturedImage(post.featuredImage || '');
+            setCanonicalUrl(post.canonicalUrl || '');
+            setLayout(post.layout || 'default');
+          }
+        }
+
+        // Load images using new imageManager
+        const imageMetadata = getImageMetadata(Number(id)) || [];
+        setImages(imageMetadata);
+      };
+
+      loadPost();
     }
   }, [id, isEditing]);
 
-  const compressImage = (base64String, maxWidth = 800) => {
-    return new Promise((resolve) => {
-      const img = new Image();
-      img.src = base64String;
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        
-        let width = img.width;
-        let height = img.height;
-        
-        if (width > maxWidth) {
-          height = Math.round((height * maxWidth) / width);
-          width = maxWidth;
-        }
-        
-        canvas.width = width;
-        canvas.height = height;
-        
-        ctx.drawImage(img, 0, 0, width, height);
-        resolve(canvas.toDataURL('image/jpeg', 0.7));
-      };
-    });
-  };
-
   const processFiles = async (files) => {
+    const postId = isEditing ? Number(id) : Date.now();
+
     for (const file of files) {
-      if (file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onloadend = async () => {
-          try {
-            const compressedImage = await compressImage(reader.result);
-            const imageId = Date.now().toString();
-            const newImage = { id: imageId, name: file.name, data: compressedImage };
-            setImages(prev => [...prev, newImage]);
-            setContent(prev => `${prev}\n![${file.name}](${imageId})`);
-          } catch (error) {
-            console.error('Error processing image:', error);
-            alert('Error processing image. Please try a smaller image.');
-          }
-        };
-        reader.readAsDataURL(file);
+      // Validate file before processing
+      const validation = validateImageFile(file);
+      if (!validation.isValid) {
+        alert(`Error with ${file.name}:\n${validation.errors.join('\n')}`);
+        continue;
+      }
+
+      try {
+        // Compress the image
+        const compressed = await compressImage(file, 1200, 0.8);
+
+        // Generate unique filename and ID
+        const imageId = Date.now().toString() + Math.random().toString(36).substring(7);
+        const filename = generateImageFilename(file);
+
+        // Create metadata
+        const metadata = createImageMetadata({
+          id: imageId,
+          filename,
+          originalName: file.name,
+          size: compressed.blob.size,
+          width: compressed.width,
+          height: compressed.height,
+          dataUrl: compressed.dataUrl,
+          alt: file.name
+        });
+
+        // Save image data
+        saveImageData(imageId, compressed.dataUrl);
+        saveImageMetadata(postId, metadata);
+
+        // Add to state
+        setImages(prev => [...prev, metadata]);
+
+        // Add to content with proper markdown
+        setContent(prev => `${prev}\n![${file.name}](${imageId})`);
+      } catch (error) {
+        console.error('Error processing image:', error);
+        alert(`Error processing ${file.name}: ${error.message}`);
       }
     }
   };
 
-  const handleImageUpload = async (e) => {
+  const handleImageUpload = useCallback(async (e) => {
     await processFiles(Array.from(e.target.files));
-  };
+  }, []);
 
-  const handleDragOver = (e) => {
+  const handleDragOver = useCallback((e) => {
     e.preventDefault();
     setIsDragging(true);
-  };
+  }, []);
 
-  const handleDragLeave = (e) => {
+  const handleDragLeave = useCallback((e) => {
     e.preventDefault();
     setIsDragging(false);
-  };
+  }, []);
 
-  const handleDrop = async (e) => {
+  const handleDrop = useCallback(async (e) => {
     e.preventDefault();
     setIsDragging(false);
     await processFiles(Array.from(e.dataTransfer.files));
-  };
+  }, []);
 
-  const handleSave = async () => {
+  const validateForm = useCallback(() => {
+    const fieldValidations = {
+      title: validateTitle(title),
+      content: validateContent(content),
+      metaDescription: validateMetaDescription(metaDescription),
+      canonicalUrl: validateUrl(canonicalUrl),
+      featuredImage: validateUrl(featuredImage)
+    };
+
+    const errors = {};
+    Object.entries(fieldValidations).forEach(([field, validation]) => {
+      if (!validation.isValid) {
+        errors[field] = validation.error;
+      }
+    });
+
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  }, [title, content, metaDescription, canonicalUrl, featuredImage]);
+
+  const handleSave = useCallback(async () => {
+    if (!validateForm()) {
+      alert('Please fix the validation errors below');
+      return;
+    }
+
+    setIsSubmitting(true);
     try {
       // Generate SEO-friendly slug
       const slug = title.toLowerCase()
@@ -124,17 +185,9 @@ function BlogEditor() {
       const wordCount = content.split(/\s+/).length;
       const readingTime = Math.ceil(wordCount / wordsPerMinute);
 
-      const posts = JSON.parse(localStorage.getItem('blog-posts') || '[]');
-      // Replace image IDs with actual base64 data in content
-      let finalContent = content;
-      images.forEach(img => {
-        finalContent = finalContent.replace(img.id, img.data);
-      });
-
-      const post = {
-        id: isEditing ? Number(id) : Date.now(),
+      const postData = {
         title,
-        content: finalContent,
+        content: content,
         metaDescription: autoMetaDescription,
         keywords,
         author,
@@ -146,31 +199,46 @@ function BlogEditor() {
         wordCount,
         readingTime,
         layout,
-        date: isEditing ? posts.find(p => p.id === Number(id)).date : new Date().toISOString(),
-        lastModified: new Date().toISOString()
       };
 
-      let updatedPosts;
-      if (isEditing) {
-        updatedPosts = posts.map(p => p.id === Number(id) ? post : p);
-      } else {
-        updatedPosts = [...posts, post];
-      }
-      
+      // Save to server (primary) and localStorage (fallback/legacy)
       try {
-        localStorage.setItem('blog-posts', JSON.stringify(updatedPosts));
-      } catch (e) {
-        while (updatedPosts.length > 0) {
-          updatedPosts.shift();
-          try {
-            localStorage.setItem('blog-posts', JSON.stringify(updatedPosts));
-            break;
-          } catch (e) {
-            if (updatedPosts.length === 1) {
-              throw new Error('Cannot save post: not enough storage space');
-            }
-          }
+        let savedPost;
+        if (isEditing) {
+          savedPost = await blogAPI.updatePost(id, postData);
+        } else {
+          savedPost = await blogAPI.createPost(postData);
         }
+
+        // Also save to localStorage for backward compatibility
+        const posts = JSON.parse(localStorage.getItem('blog-posts') || '[]');
+        const postId = isEditing ? Number(id) : (savedPost._id || Date.now());
+
+        const post = sanitizeBlogPost({
+          id: postId,
+          ...postData,
+          date: isEditing && posts.length > 0 ? posts.find(p => p.id === Number(id))?.date : new Date().toISOString(),
+          lastModified: new Date().toISOString()
+        });
+
+        let updatedPosts;
+        if (isEditing) {
+          updatedPosts = posts.map(p => p.id === Number(id) ? post : p);
+        } else {
+          updatedPosts = [...posts, post];
+        }
+
+        try {
+          localStorage.setItem('blog-posts', JSON.stringify(updatedPosts));
+        } catch (e) {
+          // Fallback if localStorage is full
+          console.warn('localStorage is full, saving to server only');
+        }
+      } catch (error) {
+        console.error('Error saving post:', error.message);
+        alert(`Error saving post: ${error.message}`);
+        setIsSubmitting(false);
+        return;
       }
 
       const getLayoutClasses = () => {
@@ -216,6 +284,18 @@ function BlogEditor() {
         "articleSection": category,
         "inLanguage": "en-US"
       };
+
+      // Create content with proper image paths for HTML export
+      let contentWithImages = content;
+      images.forEach(img => {
+        // Keep image IDs in the markdown for now
+        // They'll be converted to proper paths when viewing
+        const imagePath = `/blog-images/inline/${img.filename}`;
+        contentWithImages = contentWithImages.replace(
+          new RegExp(`!\\[([^\\]]*)]\\(${img.id}\\)`, 'g'),
+          `![${img.originalName}](${imagePath})`
+        );
+      });
 
       const htmlContent = `
         <!DOCTYPE html>
@@ -329,7 +409,7 @@ function BlogEditor() {
                 
                 <!-- Article Content -->
                 <div class="prose prose-lg max-w-none">
-                  ${finalContent}
+                  ${contentWithImages}
                 </div>
                 
                 <!-- Article Footer -->
@@ -515,23 +595,29 @@ function BlogEditor() {
         </html>
       `;
 
+      addBlogToManifest(post);
+
       const blob = new Blob([htmlContent], { type: 'text/html' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `${title.toLowerCase().replace(/\s+/g, '-')}.html`;
+      a.download = `${post.slug}.html`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
 
+      alert(`Blog ${isEditing ? 'updated' : 'published'} successfully! HTML file downloaded.`);
+      setIsSubmitting(false);
       navigate('/');
     } catch (error) {
+      console.error('Error saving post:', error);
+      setIsSubmitting(false);
       alert('Error saving post: ' + error.message);
     }
-  };
+  }, [isEditing, id, title, content, metaDescription, keywords, author, category, tags, featuredImage, canonicalUrl, images, layout, navigate, validateForm]);
 
-  const getPreviewClasses = () => {
+  const getPreviewClasses = useCallback(() => {
     switch (layout) {
       case 'centered':
         return 'max-w-2xl mx-auto';
@@ -542,210 +628,347 @@ function BlogEditor() {
       default:
         return 'max-w-4xl mx-auto';
     }
-  };
+  }, [layout]);
 
   // Custom components for ReactMarkdown to handle image preview
-  const components = {
+  const components = useMemo(() => ({
     img: ({src, alt}) => {
-      const image = images.find(img => img.id === src);
+      // Check if src is an image ID from our system
+      const imageMetadata = images.find(img => img.id === src);
+      const imageSrc = imageMetadata ? imageMetadata.dataUrl : src;
+
       return (
-        <img 
-          src={image ? image.data : src} 
-          alt={alt} 
-          className="max-w-full h-auto rounded-lg"
+        <img
+          src={imageSrc}
+          alt={alt || 'Image'}
+          className="max-w-full h-auto rounded-lg shadow-md my-2"
+          loading="lazy"
         />
       );
     }
-  };
+  }), [images]);
 
   return (
-    <div className="grid grid-cols-2 gap-8">
-      <div className="space-y-4">
-        <h1 className="text-2xl font-bold">{isEditing ? 'Edit Post' : 'Create New Post'}</h1>
-        <input
-          type="text"
-          placeholder="Post Title"
-          className="w-full p-2 border rounded"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-        
-        <div
-          ref={dropZoneRef}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onDrop={handleDrop}
-          className={`border-2 border-dashed rounded p-4 transition-colors ${
-            isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300'
-          }`}
-        >
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Upload Images (Drag & Drop or Click)
-          </label>
-          <input
-            type="file"
-            accept="image/*"
-            multiple
-            onChange={handleImageUpload}
-            className="block w-full text-sm text-gray-500
-              file:mr-4 file:py-2 file:px-4
-              file:rounded-full file:border-0
-              file:text-sm file:font-semibold
-              file:bg-blue-50 file:text-blue-700
-              hover:file:bg-blue-100"
-          />
-          <p className="text-sm text-gray-500 mt-1">
-            {isDragging ? 'Drop images here!' : 'Drag images here or click to upload'}
-          </p>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pb-8">
+      <div className="space-y-6">
+        <div className="bg-gradient-to-br from-teal-50 to-cyan-50 rounded-2xl p-8 border-2 border-teal-200">
+          <h1 className="text-4xl font-bold mb-2">{isEditing ? '✏️ Edit Article' : '📝 Create Health Article'}</h1>
+          <p className="text-gray-600 text-lg">{isEditing ? 'Update your health article and regenerate HTML' : 'Write, preview, and publish your health article'}</p>
         </div>
 
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">Layout Style</label>
+        <div>
+          <label className="block text-sm font-bold text-gray-700 mb-2">Article Title</label>
+          <input
+            type="text"
+            placeholder="Enter a compelling health article title..."
+            className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent placeholder-gray-500 font-medium transition ${validationErrors.title ? 'border-red-500' : 'border-gray-300'}`}
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            aria-label="Article title"
+            aria-invalid={!!validationErrors.title}
+            aria-describedby={validationErrors.title ? 'title-error' : undefined}
+            maxLength="200"
+          />
+          <div className="flex items-center justify-between mt-2">
+            <p className="text-xs text-gray-500">{title.length}/200 characters</p>
+            {validationErrors.title && (
+              <p id="title-error" className="text-red-600 text-sm" role="alert">
+                ✗ {validationErrors.title}
+              </p>
+            )}
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          <label htmlFor="image-upload" className="block text-sm font-bold text-gray-700">
+            🖼️ Upload Medical Images
+          </label>
+          <div
+            ref={dropZoneRef}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            className={`border-3 border-dashed rounded-xl p-8 transition-all ${
+              isDragging ? 'border-teal-500 bg-teal-50 scale-105' : 'border-gray-300 bg-gray-50 hover:bg-gray-100'
+            }`}
+            role="region"
+            aria-label="Image upload area"
+          >
+            <input
+              id="image-upload"
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleImageUpload}
+              className="block w-full text-sm text-gray-500
+                file:mr-4 file:py-2 file:px-4
+                file:rounded-full file:border-0
+                file:text-sm file:font-semibold
+                file:bg-teal-100 file:text-teal-700
+                hover:file:bg-teal-200 hover:file:cursor-pointer"
+              aria-label="File upload for images"
+            />
+            <p className="text-center text-gray-600 mt-3 font-medium">
+              {isDragging ? '✨ Drop images here!' : '🖼️ Drag and drop images here or click to upload'}
+            </p>
+            <p className="text-center text-xs text-gray-500 mt-2">
+              Supported formats: JPG, PNG, WebP. Max 10MB per image.
+            </p>
+          </div>
+
+          {/* Image Gallery */}
+          {images.length > 0 && (
+            <div className="bg-gradient-to-br from-teal-50 to-cyan-50 p-6 rounded-xl border-2 border-teal-200">
+              <h3 className="font-bold text-gray-900 mb-4 flex items-center space-x-2">
+                <span>📷</span>
+                <span>Uploaded Images ({images.length})</span>
+              </h3>
+              <ImageGallery
+                images={images}
+                postId={isEditing ? Number(id) : undefined}
+                onImageDelete={(imageId) => {
+                  setImages(prev => prev.filter(img => img.id !== imageId));
+                  setContent(prev => prev.replace(new RegExp(`!\\[[^\\]]*\\]\\(${imageId}\\)`, 'g'), ''));
+                }}
+              />
+            </div>
+          )}
+        </div>
+
+        <div className="space-y-3">
+          <label htmlFor="layout-select" className="block text-sm font-bold text-gray-700">Layout Style</label>
           <select
+            id="layout-select"
             value={layout}
             onChange={(e) => setLayout(e.target.value)}
-            className="w-full p-2 border rounded"
+            className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent font-medium bg-white"
+            aria-label="Article layout style"
           >
-            <option value="default">Default</option>
-            <option value="centered">Centered</option>
-            <option value="wide">Wide</option>
-            <option value="sidebar">With Sidebar</option>
+            <option value="default">📄 Default</option>
+            <option value="centered">⬜ Centered</option>
+            <option value="wide">📐 Wide</option>
+            <option value="sidebar">📑 With Sidebar</option>
           </select>
         </div>
 
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">Content</label>
+        <div className="space-y-3">
+          <label className="block text-sm font-bold text-gray-700">Content</label>
           <RichTextEditor
             content={content}
             onChange={setContent}
           />
+          {validationErrors.content && (
+            <p className="text-red-600 text-sm mt-1" role="alert">
+              {validationErrors.content}
+            </p>
+          )}
         </div>
         
         {/* SEO Section */}
-        <div className="bg-blue-50 p-4 rounded-lg space-y-4">
-          <h3 className="text-lg font-semibold text-blue-900">SEO & Metadata</h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+        <div className="bg-gradient-to-br from-teal-50 to-cyan-50 p-8 rounded-2xl border-2 border-teal-200 space-y-6">
+          <h3 className="text-2xl font-bold text-teal-900 flex items-center space-x-2">
+            <span>🔍</span>
+            <span>SEO & Metadata</span>
+          </h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="bg-white p-5 rounded-xl border-2 border-teal-100">
+              <label className="block text-sm font-bold text-gray-700 mb-2">
                 Meta Description
               </label>
               <textarea
                 value={metaDescription}
                 onChange={(e) => setMetaDescription(e.target.value)}
-                className="w-full p-2 border rounded text-sm"
+                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
                 rows="3"
                 maxLength="160"
-                placeholder="Brief description for search engines (160 chars max)"
+                placeholder="Brief health article summary for search engines..."
               />
-              <p className="text-xs text-gray-500 mt-1">
-                {metaDescription.length}/160 characters
+              <p className="text-xs text-gray-500 mt-2 flex justify-between">
+                <span>Used for SEO preview</span>
+                <span className="font-medium">{metaDescription.length}/160</span>
               </p>
             </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Keywords
+
+            <div className="bg-white p-5 rounded-xl border-2 border-teal-100">
+              <label className="block text-sm font-bold text-gray-700 mb-2">
+                Health Keywords
               </label>
               <input
                 type="text"
                 value={keywords}
                 onChange={(e) => setKeywords(e.target.value)}
-                className="w-full p-2 border rounded text-sm"
-                placeholder="keyword1, keyword2, keyword3"
+                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
+                placeholder="health, wellness, nutrition, fitness"
               />
-              <p className="text-xs text-gray-500 mt-1">
-                Separate keywords with commas
-              </p>
+              <p className="text-xs text-gray-500 mt-2">Separate with commas</p>
             </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Author
+
+            <div className="bg-white p-5 rounded-xl border-2 border-teal-100">
+              <label className="block text-sm font-bold text-gray-700 mb-2">
+                Author/Healthcare Provider
               </label>
               <input
                 type="text"
                 value={author}
                 onChange={(e) => setAuthor(e.target.value)}
-                className="w-full p-2 border rounded text-sm"
-                placeholder="Author name"
+                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
+                placeholder="e.g., Dr. Jane Smith, MD"
               />
             </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Category
+
+            <div className="bg-white p-5 rounded-xl border-2 border-teal-100">
+              <label className="block text-sm font-bold text-gray-700 mb-2">
+                Health Category
               </label>
               <input
                 type="text"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full p-2 border rounded text-sm"
-                placeholder="Technology, Lifestyle, etc."
+                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
+                placeholder="e.g., Nutrition, Mental Health, Fitness"
               />
             </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Tags
+
+            <div className="bg-white p-5 rounded-xl border-2 border-teal-100">
+              <label className="block text-sm font-bold text-gray-700 mb-2">
+                Health Topics/Tags
               </label>
               <input
                 type="text"
                 value={tags}
                 onChange={(e) => setTags(e.target.value)}
-                className="w-full p-2 border rounded text-sm"
-                placeholder="tag1, tag2, tag3"
+                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
+                placeholder="wellness, prevention, medical"
               />
             </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+
+            <div className="bg-white p-5 rounded-xl border-2 border-teal-100">
+              <label className="block text-sm font-bold text-gray-700 mb-2">
                 Featured Image URL
               </label>
               <input
                 type="url"
                 value={featuredImage}
                 onChange={(e) => setFeaturedImage(e.target.value)}
-                className="w-full p-2 border rounded text-sm"
-                placeholder="https://example.com/image.jpg"
+                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
+                placeholder="https://example.com/health-image.jpg"
               />
             </div>
-            
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Canonical URL (Optional)
+
+            <div className="md:col-span-2 bg-white p-5 rounded-xl border-2 border-teal-100">
+              <label className="block text-sm font-bold text-gray-700 mb-2">
+                Canonical URL <span className="text-xs font-normal text-gray-500">(Optional)</span>
               </label>
               <input
                 type="url"
                 value={canonicalUrl}
                 onChange={(e) => setCanonicalUrl(e.target.value)}
-                className="w-full p-2 border rounded text-sm"
-                placeholder="https://yourdomain.com/blog/post-title"
+                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
+                placeholder="https://yourdomain.com/health/article-title"
               />
-              <p className="text-xs text-gray-500 mt-1">
-                Leave empty to auto-generate
-              </p>
+              <p className="text-xs text-gray-500 mt-2">Leave empty to auto-generate</p>
             </div>
           </div>
         </div>
         
-        <button
-          onClick={handleSave}
-          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-        >
-          {isEditing ? 'Update & Generate HTML' : 'Save & Generate HTML'}
-        </button>
+        <div className="space-y-3">
+          <button
+            onClick={handleSave}
+            disabled={isSubmitting}
+            className={`w-full px-6 py-3 rounded-xl font-bold transition-all duration-200 text-lg ${
+              isSubmitting
+                ? 'bg-gray-400 text-gray-600 cursor-not-allowed opacity-60'
+                : 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:shadow-lg hover:from-emerald-600 hover:to-teal-700'
+            }`}
+            aria-label={isEditing ? 'Update and generate HTML' : 'Publish and generate HTML'}
+          >
+            {isSubmitting ? '⏳ Publishing...' : (isEditing ? '✅ Update & Generate HTML' : '🚀 Publish Health Article')}
+          </button>
+          <button
+            onClick={() => setShowPublishOptions(!showPublishOptions)}
+            className="w-full bg-gradient-to-r from-teal-500 to-cyan-600 text-white px-6 py-3 rounded-xl hover:shadow-lg hover:from-teal-600 hover:to-cyan-700 font-bold transition-all duration-200"
+          >
+            {showPublishOptions ? '✕ Hide' : '⚙️ Show'} Advanced Options
+          </button>
+        </div>
+
+        {showPublishOptions && (
+          <div className="bg-gradient-to-br from-teal-50 to-cyan-50 p-6 rounded-2xl border-2 border-teal-200 space-y-4">
+            <h3 className="font-bold text-teal-900 text-lg flex items-center space-x-2">
+              <span>⚙️</span>
+              <span>Export & Publish Options</span>
+            </h3>
+            <button
+              onClick={() => {
+                const posts = JSON.parse(localStorage.getItem('blog-posts') || '[]');
+                const libraryHTML = generateBlogLibraryHTML(posts);
+                const blob = new Blob([libraryHTML], { type: 'text/html' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'blog-library.html';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+              }}
+              className="w-full group bg-gradient-to-r from-blue-500 to-cyan-600 text-white px-4 py-3 rounded-xl hover:shadow-lg hover:from-blue-600 hover:to-cyan-700 font-bold text-sm transition-all duration-200"
+            >
+              📚 Export Health Article Library (Index Page)
+            </button>
+            <button
+              onClick={() => {
+                const posts = JSON.parse(localStorage.getItem('blog-posts') || '[]');
+                const postsWithHtml = posts.map(p => ({
+                  ...p,
+                  fileName: `${p.slug}.html`
+                }));
+                const zip = { posts: postsWithHtml, totalPosts: posts.length, exportedAt: new Date().toISOString() };
+                const blob = new Blob([JSON.stringify(zip, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'health-articles-manifest.json';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+              }}
+              className="w-full group bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-4 py-3 rounded-xl hover:shadow-lg hover:from-emerald-600 hover:to-teal-700 font-bold text-sm transition-all duration-200"
+            >
+              📋 Export Health Articles Manifest (JSON)
+            </button>
+            <div className="bg-white p-4 rounded-lg border border-teal-200 mt-4">
+              <p className="text-xs text-gray-600 leading-relaxed">
+                <strong>💡 Pro Tip:</strong> Export your health article library to get a standalone index page listing all your articles. You can then download individual article HTML files to host them on a health information website.
+              </p>
+            </div>
+          </div>
+        )}
       </div>
       
-      <div className="border rounded p-4 bg-white">
-        <h2 className="text-2xl font-bold mb-4">Preview</h2>
-        <div className={getPreviewClasses()}>
-          <h1 className="text-4xl font-bold mb-4">{title}</h1>
-          <div className="prose prose-lg">
-            <ReactMarkdown components={components}>
-              {content}
-            </ReactMarkdown>
-          </div>
+      <div className="border-2 border-teal-300 rounded-2xl p-8 bg-white shadow-lg">
+        <div className="flex items-center space-x-3 mb-6">
+          <span className="text-3xl">👁️</span>
+          <h2 className="text-3xl font-bold">Article Preview</h2>
+        </div>
+        <div className={`${getPreviewClasses()} bg-gradient-to-br from-teal-50 to-cyan-50 p-8 rounded-xl border-2 border-teal-200`}>
+          {title ? (
+            <>
+              <h1 className="text-4xl font-bold mb-6 text-gray-900">{title}</h1>
+              <div className="prose prose-lg max-w-none text-gray-800">
+                <ReactMarkdown components={components}>
+                  {content || '✍️ Start typing your content here...'}
+                </ReactMarkdown>
+              </div>
+            </>
+          ) : (
+            <div className="text-center py-12">
+              <div className="text-6xl mb-4 opacity-40">📝</div>
+              <p className="text-gray-500 text-lg">Enter a title and start writing to see the preview</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -1,0 +1,51 @@
+# Blog Images Folder
+
+This folder stores uploaded blog images.
+
+## Folder Structure
+
+
+public/blog-images/
+├── featured/          # Featured/hero images for blogs
+│   ├── blog-1-hero.jpg
+│   └── blog-2-hero.jpg
+├── inline/            # Images used within blog content
+│   ├── img-1704067200000-abc123.jpg
+│   ├── img-1704067300000-def456.jpg
+│   └── ...
+└── archive/           # Archived images (for cleanup)
+```
+
+## Image Organization
+
+- **featured/**: Large images used as blog headers (optimized for 1200x630px)
+- **inline/**: Images inserted into blog content (optimized for readability)
+- **archive/**: Removed/replaced images (kept for backup)
+
+## File Naming Convention
+
+- Auto-generated: `img-{timestamp}-{randomId}.jpg`
+- Featured images: `blog-{blogId}-hero.jpg`
+- Organized by type for easy management
+
+## Image Optimization
+
+All uploaded images are automatically:
+- Compressed to reduce file size
+- Resized to max 1200px width
+- Converted to optimal format (JPEG for photos, PNG for graphics)
+- Validated before storage
+
+## Access
+
+Published blog images are served at:
+- `/blog-images/[folder]/[filename]`
+
+Example: `/blog-images/inline/img-1704067200000-abc123.jpg`
+
+## Storage Management
+
+- Monitor localStorage usage in blog editor
+- Archive old images when needed
+- Use CDN for improved delivery
+- Consider cloud storage (Supabase) for scale
