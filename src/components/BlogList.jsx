@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { generateBlogLibraryHTML } from '../utils/blogLibraryGenerator';
 import { downloadBlogAsHTML } from '../utils/staticSiteExporter';
+import { blogAPI } from '../services/api';
 
 function BlogList() {
   const [posts, setPosts] = useState([]);
@@ -9,15 +10,35 @@ function BlogList() {
   const location = useLocation();
 
   useEffect(() => {
-    const savedPosts = JSON.parse(localStorage.getItem('blog-posts') || '[]');
-    const sortedPosts = savedPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
-    setPosts(sortedPosts);
+    const loadPosts = async () => {
+      try {
+        // Load from server
+        const response = await blogAPI.getAllPosts(100);
+        const serverPosts = response.posts || [];
+        const sortedPosts = serverPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
+        setPosts(sortedPosts);
 
-    setStats({
-      total: sortedPosts.length,
-      totalWords: sortedPosts.reduce((sum, p) => sum + (p.wordCount || 0), 0),
-      totalReadTime: sortedPosts.reduce((sum, p) => sum + (p.readingTime || 0), 0)
-    });
+        setStats({
+          total: sortedPosts.length,
+          totalWords: sortedPosts.reduce((sum, p) => sum + (p.wordCount || 0), 0),
+          totalReadTime: sortedPosts.reduce((sum, p) => sum + (p.readingTime || 0), 0)
+        });
+      } catch (error) {
+        console.warn('Could not load posts from server, using localStorage:', error.message);
+        // Fallback to localStorage
+        const savedPosts = JSON.parse(localStorage.getItem('blog-posts') || '[]');
+        const sortedPosts = savedPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
+        setPosts(sortedPosts);
+
+        setStats({
+          total: sortedPosts.length,
+          totalWords: sortedPosts.reduce((sum, p) => sum + (p.wordCount || 0), 0),
+          totalReadTime: sortedPosts.reduce((sum, p) => sum + (p.readingTime || 0), 0)
+        });
+      }
+    };
+
+    loadPosts();
   }, [location]);
 
   const getAverageRating = (postId) => {
