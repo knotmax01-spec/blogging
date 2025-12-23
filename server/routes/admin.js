@@ -4,8 +4,12 @@ import {
   triggerTrendAnalysis,
   triggerPostGeneration,
 } from '../utils/scheduler.js';
+import { requireAdminAuth } from '../middleware/auth.js';
 
 const router = express.Router();
+
+// Apply authentication to all admin routes
+router.use(requireAdminAuth);
 
 // Get trending topics
 router.get('/trends', async (req, res) => {

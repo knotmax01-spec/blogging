@@ -1,11 +1,16 @@
 import OpenAI from 'openai';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const MODEL = process.env.OPENAI_MODEL || 'gpt-4';
 const TARGET_WORDS = parseInt(process.env.WORDS_PER_POST) || 1000;
+
+if (!OPENAI_API_KEY) {
+  console.warn('⚠️ OPENAI_API_KEY environment variable is not set. Blog post generation will not work.');
+}
+
+const openai = new OpenAI({
+  apiKey: OPENAI_API_KEY,
+});
 
 function generateSlug(title) {
   return title
@@ -18,6 +23,9 @@ function generateSlug(title) {
 
 export async function generateBlogPost(topic, researchNotes = '') {
   try {
+    if (!OPENAI_API_KEY) {
+      throw new Error('OPENAI_API_KEY is not configured. Cannot generate blog posts.');
+    }
     const systemPrompt = `You are an expert healthcare writer specializing in creating engaging, informative blog posts about health, wellness, and medical topics. 
 Write in a conversational yet professional tone. Include storytelling elements to maintain reader engagement.
 Target word count: ${TARGET_WORDS} words.
@@ -124,6 +132,9 @@ ${parsed.conclusion}`;
 
 export async function generateBlogTitle(topic) {
   try {
+    if (!OPENAI_API_KEY) {
+      throw new Error('OPENAI_API_KEY is not configured. Cannot generate titles.');
+    }
     const response = await openai.chat.completions.create({
       model: MODEL,
       messages: [

@@ -3,8 +3,15 @@ import axios from 'axios';
 const PERPLEXITY_API_KEY = process.env.PERPLEXITY_API_KEY;
 const PERPLEXITY_MODEL = process.env.PERPLEXITY_MODEL || 'pplx-7b-online';
 
+if (!PERPLEXITY_API_KEY) {
+  console.warn('⚠️ PERPLEXITY_API_KEY environment variable is not set. Trend analysis will not work.');
+}
+
 export async function getTrendingHealthcareTopics() {
   try {
+    if (!PERPLEXITY_API_KEY) {
+      throw new Error('PERPLEXITY_API_KEY is not configured');
+    }
     const response = await axios.post(
       'https://api.perplexity.ai/chat/completions',
       {
@@ -55,6 +62,9 @@ Focus on real healthcare advancements, wellness trends, medical innovations, and
 
 export async function researchTopic(topic) {
   try {
+    if (!PERPLEXITY_API_KEY) {
+      throw new Error('PERPLEXITY_API_KEY is not configured');
+    }
     const response = await axios.post(
       'https://api.perplexity.ai/chat/completions',
       {
