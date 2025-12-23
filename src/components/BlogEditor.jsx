@@ -185,15 +185,7 @@ function BlogEditor() {
       const wordCount = content.split(/\s+/).length;
       const readingTime = Math.ceil(wordCount / wordsPerMinute);
 
-      const posts = JSON.parse(localStorage.getItem('blog-posts') || '[]');
-      const postId = isEditing ? Number(id) : Date.now();
-
-      // Note: Images are already stored via imageManager during upload
-      // Just track the image IDs in the post
-      const imageIds = images.map(img => img.id);
-
-      const post = sanitizeBlogPost({
-        id: postId,
+      const postData = {
         title,
         content: content,
         metaDescription: autoMetaDescription,
@@ -207,32 +199,46 @@ function BlogEditor() {
         wordCount,
         readingTime,
         layout,
-        imageIds: imageIds,
-        date: isEditing ? posts.find(p => p.id === Number(id)).date : new Date().toISOString(),
-        lastModified: new Date().toISOString()
-      });
+      };
 
-      let updatedPosts;
-      if (isEditing) {
-        updatedPosts = posts.map(p => p.id === Number(id) ? post : p);
-      } else {
-        updatedPosts = [...posts, post];
-      }
-      
+      // Save to server (primary) and localStorage (fallback/legacy)
       try {
-        localStorage.setItem('blog-posts', JSON.stringify(updatedPosts));
-      } catch (e) {
-        while (updatedPosts.length > 0) {
-          updatedPosts.shift();
-          try {
-            localStorage.setItem('blog-posts', JSON.stringify(updatedPosts));
-            break;
-          } catch (e) {
-            if (updatedPosts.length === 1) {
-              throw new Error('Cannot save post: not enough storage space');
-            }
-          }
+        let savedPost;
+        if (isEditing) {
+          savedPost = await blogAPI.updatePost(id, postData);
+        } else {
+          savedPost = await blogAPI.createPost(postData);
         }
+
+        // Also save to localStorage for backward compatibility
+        const posts = JSON.parse(localStorage.getItem('blog-posts') || '[]');
+        const postId = isEditing ? Number(id) : (savedPost._id || Date.now());
+
+        const post = sanitizeBlogPost({
+          id: postId,
+          ...postData,
+          date: isEditing && posts.length > 0 ? posts.find(p => p.id === Number(id))?.date : new Date().toISOString(),
+          lastModified: new Date().toISOString()
+        });
+
+        let updatedPosts;
+        if (isEditing) {
+          updatedPosts = posts.map(p => p.id === Number(id) ? post : p);
+        } else {
+          updatedPosts = [...posts, post];
+        }
+
+        try {
+          localStorage.setItem('blog-posts', JSON.stringify(updatedPosts));
+        } catch (e) {
+          // Fallback if localStorage is full
+          console.warn('localStorage is full, saving to server only');
+        }
+      } catch (error) {
+        console.error('Error saving post:', error.message);
+        alert(`Error saving post: ${error.message}`);
+        setIsSubmitting(false);
+        return;
       }
 
       const getLayoutClasses = () => {
