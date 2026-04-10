@@ -273,7 +273,7 @@ function BlogEditor() {
             "url": "https://clinicstreams.com/logo.png"
           }
         },
-        "datePublished": "${publishDate}",
+        "datePublished": publishDate,
         "dateModified": new Date().toISOString(),
         "mainEntityOfPage": {
           "@type": "WebPage",

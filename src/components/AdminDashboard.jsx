@@ -113,7 +113,7 @@ function AdminDashboard() {
       {error && (
         <div className={`mb-6 rounded-xl p-4 ${error.includes('offline') ? 'bg-amber-50 border-2 border-amber-200 text-amber-800' : 'bg-red-50 border-2 border-red-200 text-red-800'}`}>
           <span className="font-semibold">{error.includes('offline') ? '⚠️ Notice:' : '⚠️ Error:'}</span> {error}
-          {error.includes('offline') && (
+          {error.includes('offline') && import.meta.env.DEV && (
             <p className="text-xs mt-2">Run <code className="bg-amber-100 px-1 rounded">npm run dev:backend</code> to enable AI automation features.</p>
           )}
         </div>

@@ -303,7 +303,7 @@ function BlogDetail() {
     setComments(postComments);
     setNewComment('');
     setRating(0);
-    setUserName('');
+    // Keep userName so the same user can post follow-up comments easily
   };
 
   const handleDelete = () => {
