@@ -202,8 +202,9 @@ function BlogEditor() {
       };
 
       // Save to server (primary) and localStorage (fallback/legacy)
+      let savedPost;
+      let post;
       try {
-        let savedPost;
         if (isEditing) {
           savedPost = await blogAPI.updatePost(id, postData);
         } else {
@@ -211,27 +212,23 @@ function BlogEditor() {
         }
 
         // Also save to localStorage for backward compatibility
-        const posts = JSON.parse(localStorage.getItem('blog-posts') || '[]');
-        const postId = isEditing ? Number(id) : (savedPost._id || Date.now());
+        const existingPosts = JSON.parse(localStorage.getItem('blog-posts') || '[]');
+        const postId = isEditing ? Number(id) : (savedPost?._id || Date.now());
 
-        const post = sanitizeBlogPost({
+        post = sanitizeBlogPost({
           id: postId,
           ...postData,
-          date: isEditing && posts.length > 0 ? posts.find(p => p.id === Number(id))?.date : new Date().toISOString(),
+          date: isEditing ? (existingPosts.find(p => p.id === Number(id))?.date || new Date().toISOString()) : new Date().toISOString(),
           lastModified: new Date().toISOString()
         });
 
-        let updatedPosts;
-        if (isEditing) {
-          updatedPosts = posts.map(p => p.id === Number(id) ? post : p);
-        } else {
-          updatedPosts = [...posts, post];
-        }
+        const updatedPosts = isEditing
+          ? existingPosts.map(p => p.id === Number(id) ? post : p)
+          : [...existingPosts, post];
 
         try {
           localStorage.setItem('blog-posts', JSON.stringify(updatedPosts));
         } catch (e) {
-          // Fallback if localStorage is full
           console.warn('localStorage is full, saving to server only');
         }
       } catch (error) {
@@ -240,6 +237,9 @@ function BlogEditor() {
         setIsSubmitting(false);
         return;
       }
+
+      // Compute the publish date safely before building the HTML template
+      const publishDate = post?.date || new Date().toISOString();
 
       const getLayoutClasses = () => {
         switch (layout) {
@@ -260,24 +260,24 @@ function BlogEditor() {
         "@type": "BlogPosting",
         "headline": title,
         "description": autoMetaDescription,
-        "image": featuredImage || "https://via.placeholder.com/1200x630/4F46E5/FFFFFF?text=" + encodeURIComponent(title),
+        "image": featuredImage || `https://via.placeholder.com/1200x630/0D9488/FFFFFF?text=${encodeURIComponent(title)}`,
         "author": {
           "@type": "Person",
-          "name": author || "Anonymous"
+          "name": author || "ClinicStreams Editorial Team"
         },
         "publisher": {
           "@type": "Organization",
-          "name": "Blog Generator",
+          "name": "ClinicStreams",
           "logo": {
             "@type": "ImageObject",
-            "url": "https://via.placeholder.com/200x60/4F46E5/FFFFFF?text=Blog"
+            "url": "https://clinicstreams.com/logo.png"
           }
         },
-        "datePublished": isEditing ? posts.find(p => p.id === Number(id)).date : new Date().toISOString(),
+        "datePublished": "${publishDate}",
         "dateModified": new Date().toISOString(),
         "mainEntityOfPage": {
           "@type": "WebPage",
-          "@id": canonicalUrl || `https://yourdomain.com/blog/${slug}`
+          "@id": canonicalUrl || `https://clinicstreams.com/blog/${slug}`
         },
         "wordCount": wordCount,
         "keywords": keywords,
@@ -306,40 +306,41 @@ function BlogEditor() {
             <meta http-equiv="X-UA-Compatible" content="IE=edge">
             
             <!-- Primary Meta Tags -->
-            <title>${title} | Blog Generator</title>
-            <meta name="title" content="${title} | Blog Generator">
+            <title>${title} | ClinicStreams Health Blog</title>
+            <meta name="title" content="${title} | ClinicStreams Health Blog">
             <meta name="description" content="${autoMetaDescription}">
             <meta name="keywords" content="${keywords}">
-            <meta name="author" content="${author || 'Anonymous'}">
+            <meta name="author" content="${author || 'ClinicStreams Editorial Team'}">
             <meta name="robots" content="index, follow">
             <meta name="language" content="English">
             <meta name="revisit-after" content="7 days">
-            ${canonicalUrl ? `<link rel="canonical" href="${canonicalUrl}">` : ''}
+            ${canonicalUrl ? `<link rel="canonical" href="${canonicalUrl}">` : `<link rel="canonical" href="https://clinicstreams.com/blog/${slug}">`}
             
             <!-- Open Graph / Facebook -->
             <meta property="og:type" content="article">
-            <meta property="og:url" content="${canonicalUrl || `https://yourdomain.com/blog/${slug}`}">
+            <meta property="og:url" content="${canonicalUrl || `https://clinicstreams.com/blog/${slug}`}">
             <meta property="og:title" content="${title}">
             <meta property="og:description" content="${autoMetaDescription}">
-            <meta property="og:image" content="${featuredImage || `https://via.placeholder.com/1200x630/4F46E5/FFFFFF?text=${encodeURIComponent(title)}`}">
-            <meta property="og:site_name" content="Blog Generator">
-            <meta property="article:author" content="${author || 'Anonymous'}">
-            <meta property="article:published_time" content="${isEditing ? posts.find(p => p.id === Number(id)).date : new Date().toISOString()}">
+            <meta property="og:image" content="${featuredImage || `https://via.placeholder.com/1200x630/0D9488/FFFFFF?text=${encodeURIComponent(title)}`}">
+            <meta property="og:site_name" content="ClinicStreams Health Blog">
+            <meta property="article:author" content="${author || 'ClinicStreams Editorial Team'}">
+            <meta property="article:published_time" content="${publishDate}">
             <meta property="article:modified_time" content="${new Date().toISOString()}">
             <meta property="article:section" content="${category}">
             <meta property="article:tag" content="${tags}">
             
             <!-- Twitter -->
             <meta property="twitter:card" content="summary_large_image">
-            <meta property="twitter:url" content="${canonicalUrl || `https://yourdomain.com/blog/${slug}`}">
+            <meta property="twitter:url" content="${canonicalUrl || `https://clinicstreams.com/blog/${slug}`}">
             <meta property="twitter:title" content="${title}">
             <meta property="twitter:description" content="${autoMetaDescription}">
-            <meta property="twitter:image" content="${featuredImage || `https://via.placeholder.com/1200x630/4F46E5/FFFFFF?text=${encodeURIComponent(title)}`}">
-            <meta name="twitter:creator" content="@yourusername">
+            <meta property="twitter:image" content="${featuredImage || `https://via.placeholder.com/1200x630/0D9488/FFFFFF?text=${encodeURIComponent(title)}`}">
+            <meta name="twitter:creator" content="@clinicstreams">
+            <meta name="twitter:site" content="@clinicstreams">
             
             <!-- Additional SEO Meta Tags -->
-            <meta name="theme-color" content="#4F46E5">
-            <meta name="msapplication-TileColor" content="#4F46E5">
+            <meta name="theme-color" content="#0D9488">
+            <meta name="msapplication-TileColor" content="#0D9488">
             <link rel="icon" type="image/x-icon" href="/favicon.ico">
             <link rel="apple-touch-icon" href="/apple-touch-icon.png">
             
@@ -391,8 +392,8 @@ function BlogEditor() {
                   <div class="flex items-center text-sm text-gray-600 mb-4">
                     <span>By <strong>${author || 'Anonymous'}</strong></span>
                     <span class="mx-2">•</span>
-                    <time datetime="${isEditing ? posts.find(p => p.id === Number(id)).date : new Date().toISOString()}">
-                      ${new Date(isEditing ? posts.find(p => p.id === Number(id)).date : new Date().toISOString()).toLocaleDateString('en-US', { 
+                    <time datetime="${publishDate}">
+                      ${new Date(publishDate).toLocaleDateString('en-US', { 
                         year: 'numeric', 
                         month: 'long', 
                         day: 'numeric' 

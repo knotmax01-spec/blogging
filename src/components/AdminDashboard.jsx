@@ -22,7 +22,7 @@ function AdminDashboard() {
   async function loadDashboardData() {
     try {
       setError(null);
-      const [scheduler, trends, stats] = await Promise.all([
+      const [scheduler, trends, statsData] = await Promise.all([
         adminAPI.getSchedulerStatus(),
         adminAPI.getTrendingTopics('all'),
         blogAPI.getStats(),
@@ -31,10 +31,23 @@ function AdminDashboard() {
       setSchedulerStatus(scheduler);
       setTrendingTopics(trends.topics || []);
       setPendingTopics((trends.topics || []).filter(t => !t.isProcessed));
-      setStats(stats);
+      setStats(statsData);
       setLoading(false);
     } catch (err) {
-      setError(err.message);
+      // Server not available — fall back to localStorage-based stats
+      const savedPosts = JSON.parse(localStorage.getItem('blog-posts') || '[]');
+      setStats({
+        total: savedPosts.length,
+        aiGenerated: savedPosts.filter(p => p.isAIGenerated).length,
+        manual: savedPosts.filter(p => !p.isAIGenerated).length,
+        avgWordCount: savedPosts.length > 0
+          ? Math.round(savedPosts.reduce((s, p) => s + (p.wordCount || 0), 0) / savedPosts.length)
+          : 0,
+      });
+      setSchedulerStatus(null);
+      setTrendingTopics([]);
+      setPendingTopics([]);
+      setError('AI server is offline. Showing local data only. Start the backend to enable automation.');
       setLoading(false);
     }
   }
@@ -98,8 +111,11 @@ function AdminDashboard() {
 
       {/* Alerts */}
       {error && (
-        <div className="mb-6 bg-red-50 border-2 border-red-200 rounded-xl p-4 text-red-800">
-          <span className="font-semibold">⚠️ Error:</span> {error}
+        <div className={`mb-6 rounded-xl p-4 ${error.includes('offline') ? 'bg-amber-50 border-2 border-amber-200 text-amber-800' : 'bg-red-50 border-2 border-red-200 text-red-800'}`}>
+          <span className="font-semibold">{error.includes('offline') ? '⚠️ Notice:' : '⚠️ Error:'}</span> {error}
+          {error.includes('offline') && (
+            <p className="text-xs mt-2">Run <code className="bg-amber-100 px-1 rounded">npm run dev:backend</code> to enable AI automation features.</p>
+          )}
         </div>
       )}
       {success && (

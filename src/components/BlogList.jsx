@@ -64,20 +64,33 @@ function BlogList() {
   return (
     <div className="space-y-8">
       {/* Hero Section */}
-      <div className="bg-gradient-to-br from-teal-600 via-cyan-700 to-blue-900 text-white rounded-2xl p-12 shadow-2xl border border-teal-400/20">
+      <div className="bg-gradient-to-br from-teal-600 via-cyan-700 to-blue-900 text-white rounded-2xl p-10 md:p-12 shadow-2xl border border-teal-400/20">
         <div className="flex items-start justify-between mb-6">
           <div>
-            <h1 className="text-5xl font-bold mb-3">Welcome to Your Health Blog Hub</h1>
-            <p className="text-teal-50 text-lg max-w-xl">Share valuable health insights, wellness tips, and medical knowledge with your readers. Empower your community with evidence-based health information.</p>
+            <div className="flex items-center space-x-2 mb-3">
+              <span className="text-xs font-bold uppercase tracking-widest text-teal-200 bg-teal-700/50 px-3 py-1 rounded-full">ClinicStreams Blog</span>
+            </div>
+            <h1 className="text-4xl md:text-5xl font-bold mb-3">Healthcare Insights & Wellness</h1>
+            <p className="text-teal-50 text-lg max-w-xl">Evidence-based health articles, clinical tips, and wellness insights for providers and patients. Powered by ClinicStreams.</p>
           </div>
-          <div className="text-6xl opacity-30">🏥</div>
+          <div className="text-6xl opacity-20 hidden md:block">🏥</div>
         </div>
-        <Link
-          to="/new"
-          className="inline-block bg-white text-teal-600 px-8 py-3 rounded-lg font-bold hover:shadow-lg hover:scale-105 transition-all duration-200 text-lg"
-        >
-          📝 Publish Health Article
-        </Link>
+        <div className="flex flex-wrap gap-3">
+          <Link
+            to="/new"
+            className="inline-block bg-white text-teal-700 px-8 py-3 rounded-lg font-bold hover:shadow-lg hover:scale-105 transition-all duration-200"
+          >
+            📝 Publish Article
+          </Link>
+          <a
+            href="https://clinicstreams.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block border-2 border-white/50 text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/10 transition-all duration-200"
+          >
+            🏥 Visit ClinicStreams →
+          </a>
+        </div>
       </div>
 
       {/* Quick Stats */}
@@ -265,6 +278,47 @@ function BlogList() {
             <span className="text-xl flex-shrink-0">📥</span>
             <p className="text-gray-700 font-medium">Export your health knowledge base as a reference site</p>
           </div>
+        </div>
+      </div>
+
+      {/* ClinicStreams Value Proposition */}
+      <div className="bg-gradient-to-br from-teal-700 via-cyan-700 to-blue-800 rounded-2xl p-10 text-white shadow-2xl">
+        <div className="text-center mb-8">
+          <span className="text-xs font-bold uppercase tracking-widest text-teal-200">Powered by ClinicStreams</span>
+          <h2 className="text-3xl font-bold mt-2 mb-3">The Complete Healthcare Management Platform</h2>
+          <p className="text-teal-100 max-w-2xl mx-auto">Join thousands of healthcare providers who use ClinicStreams to streamline patient care, reduce admin overhead, and grow their practice.</p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          {[
+            { icon: '📅', title: 'Smart Scheduling', desc: 'Online booking with automated reminders' },
+            { icon: '🩺', title: 'Electronic Health Records', desc: 'HIPAA-compliant digital records' },
+            { icon: '💻', title: 'Telemedicine', desc: 'Video consultations from anywhere' },
+            { icon: '💳', title: 'Billing & Payments', desc: 'Automated invoicing and insurance claims' },
+          ].map(({ icon, title, desc }) => (
+            <div key={title} className="bg-white/10 backdrop-blur rounded-xl p-5 border border-white/20 hover:bg-white/20 transition">
+              <div className="text-3xl mb-2">{icon}</div>
+              <h3 className="font-bold text-white mb-1 text-sm">{title}</h3>
+              <p className="text-teal-100 text-xs">{desc}</p>
+            </div>
+          ))}
+        </div>
+        <div className="flex flex-wrap gap-3 justify-center">
+          <a
+            href="https://clinicstreams.com/signup"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-white text-teal-700 font-bold px-8 py-3 rounded-xl hover:shadow-xl hover:bg-teal-50 transition-all duration-200"
+          >
+            Start Free Trial →
+          </a>
+          <a
+            href="https://clinicstreams.com/demo"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="border-2 border-white/50 text-white font-bold px-8 py-3 rounded-xl hover:bg-white/10 transition-all duration-200"
+          >
+            Book a Demo
+          </a>
         </div>
       </div>
     </div>

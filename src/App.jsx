@@ -8,6 +8,7 @@ import TermsAndConditions from './components/TermsAndConditions';
 import AdminDashboard from './components/AdminDashboard';
 import Footer from './components/Footer';
 import ErrorBoundary from './components/ErrorBoundary';
+import NotFound from './components/NotFound';
 
 function AppContent() {
   const location = useLocation();
@@ -17,28 +18,39 @@ function AppContent() {
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-teal-50 to-cyan-50">
       <nav className="bg-white shadow-lg sticky top-0 z-40 border-b border-teal-100">
-        <div className="max-w-6xl mx-auto px-4 py-5 flex justify-between items-center">
+        <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center space-x-8">
             <Link to="/" className="text-2xl font-bold bg-gradient-to-r from-teal-600 to-cyan-700 bg-clip-text text-transparent flex items-center space-x-2 hover:opacity-80 transition">
               <span className="text-2xl">⚕️</span>
-              <span>Health Blog</span>
+              <span>ClinicStreams</span>
             </Link>
-            <div className="flex items-center space-x-8">
+            <div className="hidden md:flex items-center space-x-6">
               <Link to="/" className={`text-sm font-medium transition-all duration-200 ${isActive('/') ? 'text-teal-600 border-b-2 border-teal-600 pb-1' : 'text-gray-600 hover:text-teal-600'}`}>
                 Dashboard
               </Link>
               <Link to="/library" className={`text-sm font-medium transition-all duration-200 ${isActive('/library') ? 'text-teal-600 border-b-2 border-teal-600 pb-1' : 'text-gray-600 hover:text-teal-600'}`}>
-                📚 Article Library
+                📚 Articles
               </Link>
               <Link to="/admin" className={`text-sm font-medium transition-all duration-200 ${isActive('/admin') ? 'text-teal-600 border-b-2 border-teal-600 pb-1' : 'text-gray-600 hover:text-teal-600'}`}>
                 ⚙️ AI Admin
               </Link>
             </div>
           </div>
-          <Link to="/new" className="bg-gradient-to-r from-teal-600 to-cyan-700 text-white px-5 py-2.5 rounded-lg hover:shadow-lg hover:from-teal-700 hover:to-cyan-800 font-semibold transition-all duration-200 text-sm flex items-center space-x-2">
-            <span>📝</span>
-            <span>Publish Article</span>
-          </Link>
+          <div className="flex items-center space-x-3">
+            <a
+              href="https://clinicstreams.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden sm:inline-flex items-center space-x-1 text-sm font-semibold text-teal-700 bg-teal-50 border border-teal-200 px-4 py-2 rounded-lg hover:bg-teal-100 transition"
+            >
+              <span>🏥</span>
+              <span>Visit ClinicStreams</span>
+            </a>
+            <Link to="/new" className="bg-gradient-to-r from-teal-600 to-cyan-700 text-white px-5 py-2.5 rounded-lg hover:shadow-lg hover:from-teal-700 hover:to-cyan-800 font-semibold transition-all duration-200 text-sm flex items-center space-x-2">
+              <span>📝</span>
+              <span>New Article</span>
+            </Link>
+          </div>
         </div>
       </nav>
 
@@ -53,6 +65,7 @@ function AppContent() {
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<TermsAndConditions />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
       </div>
