@@ -3,8 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import RichTextEditor from './RichTextEditor';
 import ImageGallery from './ImageGallery';
-import { addBlogToManifest, removeBlogFromManifest } from '../utils/blogManifest';
-import { generateBlogLibraryHTML, exportBlogLibraryAsFile } from '../utils/blogLibraryGenerator';
+import { addBlogToManifest } from '../utils/blogManifest';
 import { validatePostData, validateTitle, validateContent, validateMetaDescription, validateUrl, sanitizeBlogPost } from '../utils/validation';
 import { compressImage, generateImageFilename, createImageMetadata, saveImageMetadata, getImageMetadata, saveImageData, getImageData, validateImageFile, formatFileSize } from '../utils/imageManager';
 import { blogAPI } from '../services/api';
@@ -22,7 +21,6 @@ function BlogEditor() {
   const [images, setImages] = useState([]);
   const [layout, setLayout] = useState('default');
   const [isDragging, setIsDragging] = useState(false);
-  const [showPublishOptions, setShowPublishOptions] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const dropZoneRef = useRef(null);
@@ -651,9 +649,9 @@ function BlogEditor() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pb-8">
       <div className="space-y-6">
-        <div className="bg-gradient-to-br from-teal-50 to-cyan-50 rounded-2xl p-8 border-2 border-teal-200">
-          <h1 className="text-4xl font-bold mb-2">{isEditing ? '✏️ Edit Article' : '📝 Create Health Article'}</h1>
-          <p className="text-gray-600 text-lg">{isEditing ? 'Update your health article and regenerate HTML' : 'Write, preview, and publish your health article'}</p>
+        <div className="bg-white rounded-xl border border-gray-200 p-6">
+          <h1 className="text-2xl font-bold text-gray-900 mb-1">{isEditing ? 'Edit Article' : 'New Article'}</h1>
+          <p className="text-gray-500 text-sm">{isEditing ? 'Update your health article and regenerate HTML' : 'Write, preview, and publish your health article'}</p>
         </div>
 
         <div>
@@ -680,9 +678,7 @@ function BlogEditor() {
         </div>
 
         <div className="space-y-3">
-          <label htmlFor="image-upload" className="block text-sm font-bold text-gray-700">
-            🖼️ Upload Medical Images
-          </label>
+          <label className="block text-sm font-semibold text-gray-700 mb-1">Upload Images</label>
           <div
             ref={dropZoneRef}
             onDragOver={handleDragOver}
@@ -765,17 +761,12 @@ function BlogEditor() {
         </div>
         
         {/* SEO Section */}
-        <div className="bg-gradient-to-br from-teal-50 to-cyan-50 p-8 rounded-2xl border-2 border-teal-200 space-y-6">
-          <h3 className="text-2xl font-bold text-teal-900 flex items-center space-x-2">
-            <span>🔍</span>
-            <span>SEO & Metadata</span>
-          </h3>
+        <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-5">
+          <h3 className="text-base font-bold text-gray-900">SEO & Metadata</h3>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <div className="bg-white p-5 rounded-xl border-2 border-teal-100">
-              <label className="block text-sm font-bold text-gray-700 mb-2">
-                Meta Description
-              </label>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Meta Description</label>
               <textarea
                 value={metaDescription}
                 onChange={(e) => setMetaDescription(e.target.value)}
@@ -790,183 +781,107 @@ function BlogEditor() {
               </p>
             </div>
 
-            <div className="bg-white p-5 rounded-xl border-2 border-teal-100">
-              <label className="block text-sm font-bold text-gray-700 mb-2">
-                Health Keywords
-              </label>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Keywords</label>
               <input
                 type="text"
                 value={keywords}
                 onChange={(e) => setKeywords(e.target.value)}
-                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
+                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-400 text-sm bg-gray-50"
                 placeholder="health, wellness, nutrition, fitness"
               />
-              <p className="text-xs text-gray-500 mt-2">Separate with commas</p>
+              <p className="text-xs text-gray-400 mt-1">Separate with commas</p>
             </div>
 
-            <div className="bg-white p-5 rounded-xl border-2 border-teal-100">
-              <label className="block text-sm font-bold text-gray-700 mb-2">
-                Author/Healthcare Provider
-              </label>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Author</label>
               <input
                 type="text"
                 value={author}
                 onChange={(e) => setAuthor(e.target.value)}
-                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
+                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-400 text-sm bg-gray-50"
                 placeholder="e.g., Dr. Jane Smith, MD"
               />
             </div>
 
-            <div className="bg-white p-5 rounded-xl border-2 border-teal-100">
-              <label className="block text-sm font-bold text-gray-700 mb-2">
-                Health Category
-              </label>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Category</label>
               <input
                 type="text"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
+                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-400 text-sm bg-gray-50"
                 placeholder="e.g., Nutrition, Mental Health, Fitness"
               />
             </div>
 
-            <div className="bg-white p-5 rounded-xl border-2 border-teal-100">
-              <label className="block text-sm font-bold text-gray-700 mb-2">
-                Health Topics/Tags
-              </label>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Tags</label>
               <input
                 type="text"
                 value={tags}
                 onChange={(e) => setTags(e.target.value)}
-                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
+                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-400 text-sm bg-gray-50"
                 placeholder="wellness, prevention, medical"
               />
             </div>
 
-            <div className="bg-white p-5 rounded-xl border-2 border-teal-100">
-              <label className="block text-sm font-bold text-gray-700 mb-2">
-                Featured Image URL
-              </label>
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">Featured Image URL</label>
               <input
                 type="url"
                 value={featuredImage}
                 onChange={(e) => setFeaturedImage(e.target.value)}
-                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
-                placeholder="https://example.com/health-image.jpg"
+                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-400 text-sm bg-gray-50"
+                placeholder="https://example.com/image.jpg"
               />
             </div>
 
-            <div className="md:col-span-2 bg-white p-5 rounded-xl border-2 border-teal-100">
-              <label className="block text-sm font-bold text-gray-700 mb-2">
-                Canonical URL <span className="text-xs font-normal text-gray-500">(Optional)</span>
+            <div className="md:col-span-2">
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
+                Canonical URL <span className="text-xs font-normal text-gray-400">(Optional)</span>
               </label>
               <input
                 type="url"
                 value={canonicalUrl}
                 onChange={(e) => setCanonicalUrl(e.target.value)}
-                className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
+                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-400 text-sm bg-gray-50"
                 placeholder="https://yourdomain.com/health/article-title"
               />
-              <p className="text-xs text-gray-500 mt-2">Leave empty to auto-generate</p>
+              <p className="text-xs text-gray-400 mt-1">Leave empty to auto-generate</p>
             </div>
           </div>
-        </div>
-        
-        <div className="space-y-3">
-          <button
-            onClick={handleSave}
-            disabled={isSubmitting}
-            className={`w-full px-6 py-3 rounded-xl font-bold transition-all duration-200 text-lg ${
-              isSubmitting
-                ? 'bg-gray-400 text-gray-600 cursor-not-allowed opacity-60'
-                : 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:shadow-lg hover:from-emerald-600 hover:to-teal-700'
-            }`}
-            aria-label={isEditing ? 'Update and generate HTML' : 'Publish and generate HTML'}
-          >
-            {isSubmitting ? '⏳ Publishing...' : (isEditing ? '✅ Update & Generate HTML' : '🚀 Publish Health Article')}
-          </button>
-          <button
-            onClick={() => setShowPublishOptions(!showPublishOptions)}
-            className="w-full bg-gradient-to-r from-teal-500 to-cyan-600 text-white px-6 py-3 rounded-xl hover:shadow-lg hover:from-teal-600 hover:to-cyan-700 font-bold transition-all duration-200"
-          >
-            {showPublishOptions ? '✕ Hide' : '⚙️ Show'} Advanced Options
-          </button>
         </div>
 
-        {showPublishOptions && (
-          <div className="bg-gradient-to-br from-teal-50 to-cyan-50 p-6 rounded-2xl border-2 border-teal-200 space-y-4">
-            <h3 className="font-bold text-teal-900 text-lg flex items-center space-x-2">
-              <span>⚙️</span>
-              <span>Export & Publish Options</span>
-            </h3>
-            <button
-              onClick={() => {
-                const posts = JSON.parse(localStorage.getItem('blog-posts') || '[]');
-                const libraryHTML = generateBlogLibraryHTML(posts);
-                const blob = new Blob([libraryHTML], { type: 'text/html' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'blog-library.html';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-              }}
-              className="w-full group bg-gradient-to-r from-blue-500 to-cyan-600 text-white px-4 py-3 rounded-xl hover:shadow-lg hover:from-blue-600 hover:to-cyan-700 font-bold text-sm transition-all duration-200"
-            >
-              📚 Export Health Article Library (Index Page)
-            </button>
-            <button
-              onClick={() => {
-                const posts = JSON.parse(localStorage.getItem('blog-posts') || '[]');
-                const postsWithHtml = posts.map(p => ({
-                  ...p,
-                  fileName: `${p.slug}.html`
-                }));
-                const zip = { posts: postsWithHtml, totalPosts: posts.length, exportedAt: new Date().toISOString() };
-                const blob = new Blob([JSON.stringify(zip, null, 2)], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'health-articles-manifest.json';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-              }}
-              className="w-full group bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-4 py-3 rounded-xl hover:shadow-lg hover:from-emerald-600 hover:to-teal-700 font-bold text-sm transition-all duration-200"
-            >
-              📋 Export Health Articles Manifest (JSON)
-            </button>
-            <div className="bg-white p-4 rounded-lg border border-teal-200 mt-4">
-              <p className="text-xs text-gray-600 leading-relaxed">
-                <strong>💡 Pro Tip:</strong> Export your health article library to get a standalone index page listing all your articles. You can then download individual article HTML files to host them on a health information website.
-              </p>
-            </div>
-          </div>
-        )}
+        <button
+          onClick={handleSave}
+          disabled={isSubmitting}
+          className={`w-full px-6 py-3 rounded-xl font-bold transition-all duration-200 text-sm ${
+            isSubmitting
+              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              : 'bg-teal-600 hover:bg-teal-700 text-white'
+          }`}
+          aria-label={isEditing ? 'Update and generate HTML' : 'Publish and generate HTML'}
+        >
+          {isSubmitting ? 'Publishing...' : (isEditing ? 'Update & Generate HTML' : 'Publish Article')}
+        </button>
       </div>
-      
-      <div className="border-2 border-teal-300 rounded-2xl p-8 bg-white shadow-lg">
-        <div className="flex items-center space-x-3 mb-6">
-          <span className="text-3xl">👁️</span>
-          <h2 className="text-3xl font-bold">Article Preview</h2>
-        </div>
-        <div className={`${getPreviewClasses()} bg-gradient-to-br from-teal-50 to-cyan-50 p-8 rounded-xl border-2 border-teal-200`}>
+
+      <div className="bg-white rounded-xl border border-gray-200 p-6">
+        <h2 className="text-lg font-bold text-gray-900 mb-4">Preview</h2>
+        <div className={`${getPreviewClasses()} bg-gray-50 p-6 rounded-xl border border-gray-100 min-h-[200px]`}>
           {title ? (
             <>
-              <h1 className="text-4xl font-bold mb-6 text-gray-900">{title}</h1>
-              <div className="prose prose-lg max-w-none text-gray-800">
+              <h1 className="text-3xl font-bold mb-4 text-gray-900">{title}</h1>
+              <div className="prose prose-base max-w-none text-gray-800">
                 <ReactMarkdown components={components}>
-                  {content || '✍️ Start typing your content here...'}
+                  {content || 'Start typing your content...'}
                 </ReactMarkdown>
               </div>
             </>
           ) : (
-            <div className="text-center py-12">
-              <div className="text-6xl mb-4 opacity-40">📝</div>
-              <p className="text-gray-500 text-lg">Enter a title and start writing to see the preview</p>
+            <div className="text-center py-12 text-gray-400">
+              <p className="text-base">Enter a title and start writing to see the preview</p>
             </div>
           )}
         </div>

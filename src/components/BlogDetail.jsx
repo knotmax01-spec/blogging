@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import ReactMarkdown from 'react-markdown';
+import { ArrowLeft, Download, Pencil, Trash2, Star, Clock, BookOpen, Tag } from 'lucide-react';
 import OptimizedMarkdownRenderer from './OptimizedMarkdownRenderer';
 import { removeBlogFromManifest } from '../utils/blogManifest';
 import { downloadBlogAsHTML } from '../utils/staticSiteExporter';
 import { getImageMetadata, getImageData, deletePostImages } from '../utils/imageManager';
 import { validateComment } from '../utils/validation';
+import { blogAPI } from '../services/api';
 
 function BlogDetail() {
   const [post, setPost] = useState(null);
@@ -14,288 +15,230 @@ function BlogDetail() {
   const [rating, setRating] = useState(0);
   const [userName, setUserName] = useState('');
   const [postImages, setPostImages] = useState({});
+  const [loading, setLoading] = useState(true);
   const { id } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const posts = JSON.parse(localStorage.getItem('blog-posts') || '[]');
-    const foundPost = posts.find(p => p.id === Number(id));
-    setPost(foundPost);
+    const load = async () => {
+      setLoading(true);
+      try {
+        const fetched = await blogAPI.getPostById(id);
+        setPost(fetched);
+      } catch {
+        const posts = JSON.parse(localStorage.getItem('blog-posts') || '[]');
+        setPost(posts.find(p => p.id === Number(id)) || null);
+      } finally {
+        setLoading(false);
+      }
 
-    // Load images for this post using new imageManager
-    const imageMetadata = getImageMetadata(Number(id)) || [];
-    const images = {};
-    imageMetadata.forEach(img => {
-      const dataUrl = getImageData(img.id);
-      images[img.id] = {
-        ...img,
-        dataUrl
-      };
-    });
-    setPostImages(images);
+      const imageMetadata = getImageMetadata(Number(id)) || [];
+      const images = {};
+      imageMetadata.forEach(img => {
+        images[img.id] = { ...img, dataUrl: getImageData(img.id) };
+      });
+      setPostImages(images);
 
-    // Load comments
-    const allComments = JSON.parse(localStorage.getItem('blog-comments') || '{}');
-    setComments(allComments[id] || []);
+      const allComments = JSON.parse(localStorage.getItem('blog-comments') || '{}');
+      setComments(allComments[id] || []);
+    };
+    load();
   }, [id]);
 
   const handleAddComment = () => {
-    const validation = validateComment({
-      userName,
-      content: newComment,
-      rating
-    });
-
+    const validation = validateComment({ userName, content: newComment, rating });
     if (!validation.isValid) {
-      const errorMessages = Object.values(validation.errors).join('\n');
-      alert(`Please fix the following:\n\n${errorMessages}`);
+      alert(`Please fix the following:\n\n${Object.values(validation.errors).join('\n')}`);
       return;
     }
-
-    const comment = {
-      id: Date.now(),
-      userName: userName.trim(),
-      content: newComment.trim(),
-      rating,
-      date: new Date().toISOString()
-    };
-
+    const comment = { id: Date.now(), userName: userName.trim(), content: newComment.trim(), rating, date: new Date().toISOString() };
     const allComments = JSON.parse(localStorage.getItem('blog-comments') || '{}');
     const postComments = [...(allComments[id] || []), comment];
     allComments[id] = postComments;
-
     localStorage.setItem('blog-comments', JSON.stringify(allComments));
     setComments(postComments);
     setNewComment('');
     setRating(0);
-  };
-
-  const handleEdit = () => {
-    navigate(`/edit/${id}`);
+    setUserName('');
   };
 
   const handleDelete = () => {
-    if (window.confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
-      const postId = Number(id);
-
-      // Delete post from localStorage
-      const posts = JSON.parse(localStorage.getItem('blog-posts') || '[]');
-      const updatedPosts = posts.filter(p => p.id !== postId);
-      localStorage.setItem('blog-posts', JSON.stringify(updatedPosts));
-
-      // Delete associated comments
-      const allComments = JSON.parse(localStorage.getItem('blog-comments') || '{}');
-      delete allComments[id];
-      localStorage.setItem('blog-comments', JSON.stringify(allComments));
-
-      // Delete associated images using new imageManager
-      deletePostImages(postId);
-
-      // Remove from manifest
-      removeBlogFromManifest(postId);
-
-      alert('Post and all associated images deleted successfully');
-      navigate('/');
-    }
+    if (!window.confirm('Delete this article? This cannot be undone.')) return;
+    const postId = Number(id);
+    const posts = JSON.parse(localStorage.getItem('blog-posts') || '[]');
+    localStorage.setItem('blog-posts', JSON.stringify(posts.filter(p => p.id !== postId)));
+    const allComments = JSON.parse(localStorage.getItem('blog-comments') || '{}');
+    delete allComments[id];
+    localStorage.setItem('blog-comments', JSON.stringify(allComments));
+    deletePostImages(postId);
+    removeBlogFromManifest(postId);
+    navigate('/');
   };
 
-  const StarRating = ({ value, onChange }) => {
+  if (loading) {
     return (
-      <div className="flex items-center space-x-1">
-        {[1, 2, 3, 4, 5].map((star) => (
-          <button
-            key={star}
-            onClick={() => onChange(star)}
-            className={`text-2xl ${star <= value ? 'text-yellow-400' : 'text-gray-300'}`}
-          >
-            ★
-          </button>
-        ))}
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-10 w-10 border-4 border-teal-200 border-t-teal-600" />
       </div>
     );
-  };
+  }
 
   if (!post) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center bg-gradient-to-br from-teal-50 to-cyan-50 p-12 rounded-2xl border-2 border-teal-200 border-dashed">
-          <div className="text-6xl mb-4 opacity-40">📋</div>
-          <p className="text-gray-700 text-lg font-medium mb-6">Health article not found</p>
-          <Link to="/" className="inline-block bg-gradient-to-r from-teal-600 to-cyan-700 text-white px-8 py-3 rounded-xl font-bold hover:shadow-lg transition-all duration-200">
-            ← Back to Dashboard
-          </Link>
-        </div>
+      <div className="text-center py-20">
+        <p className="text-gray-500 text-lg mb-4">Article not found.</p>
+        <Link to="/" className="inline-flex items-center gap-2 text-teal-600 hover:underline font-semibold">
+          <ArrowLeft size={16} /> Back to Dashboard
+        </Link>
       </div>
     );
   }
 
   const averageRating = comments.length > 0
     ? (comments.reduce((acc, curr) => acc + curr.rating, 0) / comments.length).toFixed(1)
-    : 'No ratings yet';
+    : null;
 
   return (
-    <div className="max-w-4xl mx-auto p-8">
-      <div className="flex justify-between items-center mb-10 flex-wrap gap-4">
-        <Link to="/" className="group flex items-center space-x-2 text-teal-600 hover:text-teal-800 font-bold text-lg transition">
-          <span className="group-hover:-translate-x-1 transition-transform">←</span>
-          <span>Back</span>
+    <div className="max-w-3xl mx-auto space-y-8">
+      {/* Toolbar */}
+      <div className="flex items-center justify-between">
+        <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-teal-600 transition font-medium">
+          <ArrowLeft size={16} /> Back
         </Link>
-        <div className="flex flex-wrap gap-3 justify-end">
+        <div className="flex items-center gap-2">
           <button
             onClick={() => downloadBlogAsHTML(post)}
-            className="group flex items-center space-x-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-5 py-2.5 rounded-xl hover:shadow-lg hover:from-emerald-600 hover:to-teal-700 font-bold transition-all duration-200"
+            className="inline-flex items-center gap-1.5 text-sm bg-white border border-gray-200 text-gray-600 hover:text-teal-600 hover:border-teal-300 px-3 py-1.5 rounded-lg transition"
           >
-            <span>📥</span>
-            <span>Download</span>
+            <Download size={14} /> Export
           </button>
           <button
-            onClick={handleEdit}
-            className="group flex items-center space-x-2 bg-gradient-to-r from-teal-500 to-cyan-600 text-white px-5 py-2.5 rounded-xl hover:shadow-lg hover:from-teal-600 hover:to-cyan-700 font-bold transition-all duration-200"
+            onClick={() => navigate(`/edit/${id}`)}
+            className="inline-flex items-center gap-1.5 text-sm bg-white border border-gray-200 text-gray-600 hover:text-teal-600 hover:border-teal-300 px-3 py-1.5 rounded-lg transition"
           >
-            <span>✏️</span>
-            <span>Edit</span>
+            <Pencil size={14} /> Edit
           </button>
           <button
             onClick={handleDelete}
-            className="group flex items-center space-x-2 bg-gradient-to-r from-red-500 to-red-600 text-white px-5 py-2.5 rounded-xl hover:shadow-lg hover:from-red-600 hover:to-red-700 font-bold transition-all duration-200"
+            className="inline-flex items-center gap-1.5 text-sm bg-white border border-gray-200 text-red-500 hover:bg-red-50 hover:border-red-300 px-3 py-1.5 rounded-lg transition"
           >
-            <span>🗑️</span>
-            <span>Delete</span>
+            <Trash2 size={14} /> Delete
           </button>
         </div>
       </div>
-      <article className="bg-white rounded-2xl shadow-lg p-10 mb-10 border border-gray-200 hover:shadow-xl transition-shadow">
-        <h1 className="text-5xl font-bold mb-6 text-gray-900 leading-tight">{post.title}</h1>
-        <div className="flex items-center flex-wrap gap-4 mb-10 pb-8 border-b border-gray-200">
-          <div className="flex items-center space-x-2 bg-gray-100 px-4 py-2 rounded-lg">
-            <span className="text-gray-700">By</span>
-            <span className="font-bold text-gray-900">{post.author || 'Anonymous'}</span>
-          </div>
-          <time className="text-gray-600 font-medium bg-gray-100 px-4 py-2 rounded-lg">
-            {new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-          </time>
-          <div className="flex items-center space-x-1 bg-teal-100 px-4 py-2 rounded-lg">
-            <span className="text-teal-700 font-medium">{post.readingTime || 5} min read</span>
-          </div>
-          <div className="flex items-center space-x-1 bg-cyan-100 px-4 py-2 rounded-lg">
-            <span className="text-cyan-700 font-medium">{post.wordCount || 0} words</span>
-          </div>
-          {averageRating !== 'No ratings yet' && (
-            <div className="flex items-center space-x-2 bg-yellow-100 px-4 py-2 rounded-lg">
-              <span className="text-yellow-600 font-bold text-lg">★</span>
-              <span className="text-yellow-700 font-bold">{averageRating}</span>
-            </div>
-          )}
+
+      {/* Article */}
+      <article className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 md:p-12">
+        {/* Meta badges */}
+        <div className="flex items-center flex-wrap gap-2 mb-4">
           {post.category && (
-            <span className="bg-teal-600 text-white text-xs font-bold px-4 py-2 rounded-full">
-              {post.category}
+            <span className="inline-flex items-center gap-1 text-xs font-semibold text-teal-700 bg-teal-50 px-3 py-1 rounded-full">
+              <Tag size={11} /> {post.category}
+            </span>
+          )}
+          {post.tags && post.tags.split(',').slice(0, 3).map((tag, i) => (
+            <span key={i} className="text-xs text-gray-500 bg-gray-100 px-2.5 py-1 rounded-full">
+              {tag.trim()}
+            </span>
+          ))}
+        </div>
+
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight mb-6">
+          {post.title}
+        </h1>
+
+        {/* Author / date / stats row */}
+        <div className="flex items-center flex-wrap gap-x-4 gap-y-2 text-sm text-gray-500 pb-6 mb-8 border-b border-gray-100">
+          {post.author && (
+            <span className="font-semibold text-gray-700">{post.author}</span>
+          )}
+          <time>{new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
+          <span className="inline-flex items-center gap-1">
+            <Clock size={13} /> {post.readingTime || 5} min read
+          </span>
+          <span className="inline-flex items-center gap-1">
+            <BookOpen size={13} /> {post.wordCount || 0} words
+          </span>
+          {averageRating && (
+            <span className="inline-flex items-center gap-1 text-yellow-500 font-semibold">
+              <Star size={13} fill="currentColor" /> {averageRating}
             </span>
           )}
         </div>
-        <div className="prose prose-lg max-w-none">
-          <ReactMarkdown
-            components={{
-              img: ({src, alt, ...props}) => {
-                const imageData = postImages[src];
-                const imageSrc = imageData?.dataUrl || src;
-                return (
-                  <img
-                    src={imageSrc}
-                    alt={alt}
-                    {...props}
-                    className="max-w-full h-auto rounded-lg shadow-md"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                );
-              }
-            }}
-          >
-            {post.content}
-          </ReactMarkdown>
-        </div>
+
+        {/* Content */}
+        <OptimizedMarkdownRenderer content={post.content} postId={Number(id)} />
       </article>
 
-      <div className="bg-white rounded-2xl shadow-lg p-10 border border-gray-200">
-        <div className="flex items-center space-x-3 mb-10">
-          <span className="text-3xl">💬</span>
-          <h2 className="text-3xl font-bold">Comments <span className="text-lg text-gray-500">({comments.length})</span></h2>
-        </div>
+      {/* Comments */}
+      <section className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+        <h2 className="text-xl font-bold text-gray-900 mb-6">
+          Comments <span className="text-gray-400 font-normal text-base">({comments.length})</span>
+        </h2>
 
-        <div className="mb-10 bg-gradient-to-br from-teal-50 to-cyan-50 p-8 rounded-2xl border-2 border-teal-200">
-          <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center space-x-2">
-            <span>✍️</span>
-            <span>Share Your Health Insights</span>
-          </h3>
-          <div className="mb-5">
-            <label className="block text-sm font-bold text-gray-700 mb-2">
-              Your Name
-            </label>
-            <input
-              type="text"
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)}
-              className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent placeholder-gray-500 font-medium"
-              placeholder="Enter your name"
-            />
+        {/* Add comment */}
+        <div className="bg-gray-50 rounded-xl p-6 mb-6 space-y-4">
+          <h3 className="text-sm font-semibold text-gray-700">Leave a Comment</h3>
+          <input
+            type="text"
+            value={userName}
+            onChange={(e) => setUserName(e.target.value)}
+            className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-400 text-sm bg-white"
+            placeholder="Your name"
+          />
+          {/* Star rating */}
+          <div className="flex items-center gap-1">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <button
+                key={star}
+                onClick={() => setRating(star)}
+                className={`text-2xl leading-none transition-colors ${star <= rating ? 'text-yellow-400' : 'text-gray-300 hover:text-yellow-300'}`}
+              >
+                ★
+              </button>
+            ))}
           </div>
-          <div className="mb-5">
-            <label className="block text-sm font-bold text-gray-700 mb-3">
-              Article Rating
-            </label>
-            <StarRating value={rating} onChange={setRating} />
-          </div>
-          <div className="mb-6">
-            <label className="block text-sm font-bold text-gray-700 mb-2">
-              Your Comment
-            </label>
-            <textarea
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent placeholder-gray-500 font-medium"
-              rows="4"
-              placeholder="Share your health experience or feedback..."
-            />
-          </div>
+          <textarea
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+            className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-400 text-sm bg-white"
+            rows="3"
+            placeholder="Share your thoughts..."
+          />
           <button
             onClick={handleAddComment}
-            className="group w-full bg-gradient-to-r from-teal-600 to-cyan-700 text-white px-6 py-3 rounded-xl font-bold hover:shadow-lg hover:from-teal-700 hover:to-cyan-800 transition-all duration-200"
+            className="bg-teal-600 hover:bg-teal-700 text-white px-5 py-2 rounded-lg font-semibold text-sm transition"
           >
             Submit Comment
           </button>
         </div>
 
-        <div className="space-y-6">
+        {/* Comment list */}
+        <div className="space-y-4">
           {comments.length > 0 ? (
             comments.map(comment => (
-              <div key={comment.id} className="bg-gray-50 border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow">
-                <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
-                  <span className="font-bold text-lg text-gray-900 bg-gray-200 px-4 py-1.5 rounded-full">{comment.userName}</span>
-                  <time className="text-gray-600 text-sm font-medium">
+              <div key={comment.id} className="border border-gray-100 rounded-xl p-5">
+                <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
+                  <span className="font-semibold text-gray-900 text-sm">{comment.userName}</span>
+                  <time className="text-xs text-gray-400">
                     {new Date(comment.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                   </time>
                 </div>
-                <div className="flex items-center mb-4">
+                <div className="flex items-center gap-0.5 mb-2">
                   {[...Array(5)].map((_, i) => (
-                    <span
-                      key={i}
-                      className={`text-xl ${i < comment.rating ? 'text-yellow-400' : 'text-gray-300'}`}
-                    >
-                      ★
-                    </span>
+                    <span key={i} className={`text-lg ${i < comment.rating ? 'text-yellow-400' : 'text-gray-200'}`}>★</span>
                   ))}
                 </div>
-                <p className="text-gray-700 leading-relaxed text-base">{comment.content}</p>
+                <p className="text-sm text-gray-700 leading-relaxed">{comment.content}</p>
               </div>
             ))
           ) : (
-            <div className="text-center py-12 bg-gradient-to-br from-teal-50 to-cyan-50 rounded-2xl border-2 border-teal-200 border-dashed">
-              <div className="text-5xl mb-3 opacity-40">💭</div>
-              <p className="text-gray-600 text-lg font-medium">No comments yet. Be the first to share your health insights!</p>
+            <div className="text-center py-8 text-gray-400 text-sm">
+              No comments yet. Be the first to share your thoughts!
             </div>
           )}
         </div>
-      </div>
+      </section>
     </div>
   );
 }
