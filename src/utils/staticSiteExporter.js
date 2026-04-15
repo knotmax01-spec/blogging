@@ -35,10 +35,10 @@ export const generateStandaloneBlogHTML = (post) => {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     
     <!-- Primary Meta Tags -->
-    <title>${post.title} | Blog</title>
-    <meta name="title" content="${post.title} | Blog">
+    <title>${post.title} | Health Blog | ClinicStreams</title>
+    <meta name="title" content="${post.title} | Health Blog | ClinicStreams">
     <meta name="description" content="${post.metaDescription}">
-    <meta name="keywords" content="${post.keywords}">
+    <meta name="keywords" content="${post.keywords}, clinicstreams, aazhidigital, health blog">
     <meta name="author" content="${post.author || 'Anonymous'}">
     <meta name="robots" content="index, follow">
     <meta name="language" content="English">
@@ -50,7 +50,7 @@ export const generateStandaloneBlogHTML = (post) => {
     <meta property="og:title" content="${post.title}">
     <meta property="og:description" content="${post.metaDescription}">
     <meta property="og:image" content="${post.featuredImage || 'https://via.placeholder.com/1200x630/4F46E5/FFFFFF?text=' + encodeURIComponent(post.title)}">
-    <meta property="og:site_name" content="Blog">
+    <meta property="og:site_name" content="Health Blog | ClinicStreams">
     <meta property="article:author" content="${post.author || 'Anonymous'}">
     <meta property="article:published_time" content="${post.date}">
     <meta property="article:modified_time" content="${post.lastModified}">
@@ -78,8 +78,8 @@ export const generateStandaloneBlogHTML = (post) => {
     <!-- Navigation -->
     <nav class="bg-white shadow-md border-b sticky top-0 z-40">
       <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
-        <a href="blog-library.html" class="text-2xl font-bold text-blue-600">📚 Blog</a>
-        <a href="blog-library.html" class="text-blue-600 hover:text-blue-800 font-semibold">← Back to Library</a>
+        <a href="blog-library.html" class="text-2xl font-bold text-teal-600">⚕️ Health Blog</a>
+        <a href="blog-library.html" class="text-teal-600 hover:text-teal-800 font-semibold">← Back to Library</a>
       </div>
     </nav>
     
@@ -139,7 +139,13 @@ export const generateStandaloneBlogHTML = (post) => {
 
     <footer class="bg-gray-900 text-white py-8 px-4 mt-16">
       <div class="max-w-4xl mx-auto text-center">
-        <p class="text-gray-400">© ${new Date().getFullYear()} Blog. All rights reserved.</p>
+        <p class="text-gray-400 mb-2">© ${new Date().getFullYear()} Health Blog. All rights reserved.</p>
+        <p class="text-gray-500 text-sm">
+          Powered by
+          <a href="https://clinicstreams.com" target="_blank" rel="noopener noreferrer" class="text-teal-400 hover:text-teal-300 transition">ClinicStreams</a>
+          &amp;
+          <a href="https://aazhidigital.com" target="_blank" rel="noopener noreferrer" class="text-teal-400 hover:text-teal-300 transition">Aazhi Digital</a>
+        </p>
       </div>
     </footer>
   </body>

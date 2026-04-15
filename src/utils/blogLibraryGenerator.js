@@ -65,23 +65,23 @@ export const generateBlogLibraryHTML = (blogs) => {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Blog Library | All Articles</title>
-        <meta name="description" content="Explore our comprehensive blog library with articles on various topics. Discover insights, guides, and stories from our team.">
-        <meta name="keywords" content="blog, articles, ${categories.join(', ')}">
-        <meta name="author" content="Blog Generator">
+        <title>Blog Library | All Articles | ClinicStreams</title>
+        <meta name="description" content="Explore our comprehensive health blog library with expert articles on wellness, nutrition, and medical insights. Powered by ClinicStreams and Aazhi Digital.">
+        <meta name="keywords" content="health blog, articles, clinicstreams, aazhidigital, ${categories.join(', ')}">
+        <meta name="author" content="ClinicStreams &amp; Aazhi Digital">
         <meta name="robots" content="index, follow">
-        <link rel="canonical" href="./">
+        <link rel="canonical" href="https://clinicstreams.com/blog">
         
         <!-- Open Graph -->
         <meta property="og:type" content="website">
-        <meta property="og:title" content="Blog Library | All Articles">
-        <meta property="og:description" content="Explore our comprehensive blog library with articles on various topics.">
-        <meta property="og:site_name" content="Blog Library">
+        <meta property="og:title" content="Blog Library | All Articles | ClinicStreams">
+        <meta property="og:description" content="Explore our comprehensive health blog library with expert articles on wellness, nutrition, and medical insights.">
+        <meta property="og:site_name" content="Health Blog | ClinicStreams">
         
         <!-- Twitter -->
         <meta property="twitter:card" content="summary">
-        <meta property="twitter:title" content="Blog Library | All Articles">
-        <meta property="twitter:description" content="Explore our comprehensive blog library with articles on various topics.">
+        <meta property="twitter:title" content="Blog Library | All Articles | ClinicStreams">
+        <meta property="twitter:description" content="Explore our comprehensive health blog library with expert articles on wellness, nutrition, and medical insights.">
         
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -98,7 +98,7 @@ export const generateBlogLibraryHTML = (blogs) => {
         <!-- Navigation -->
         <nav class="bg-white shadow-md sticky top-0 z-50">
           <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-            <a href="./" class="text-2xl font-bold text-blue-600">📚 Blog Library</a>
+            <a href="./" class="text-2xl font-bold text-teal-600">⚕️ Health Blog</a>
             <div class="flex items-center space-x-6">
               <a href="#" onclick="scrollToSection('featured')" class="text-gray-700 hover:text-blue-600 font-medium transition">Featured</a>
               <a href="#" onclick="scrollToSection('latest')" class="text-gray-700 hover:text-blue-600 font-medium transition">Latest</a>
@@ -217,8 +217,13 @@ export const generateBlogLibraryHTML = (blogs) => {
         <!-- Footer -->
         <footer class="bg-gray-900 text-white py-12 px-4 mt-16">
           <div class="max-w-6xl mx-auto text-center">
-            <p class="text-gray-400">© ${new Date().getFullYear()} Blog Library. All rights reserved.</p>
-            <p class="text-gray-500 text-sm mt-2">Created with Blog Generator</p>
+            <p class="text-gray-400 mb-2">© ${new Date().getFullYear()} Health Blog Library. All rights reserved.</p>
+            <p class="text-gray-500 text-sm">
+              Powered by
+              <a href="https://clinicstreams.com" target="_blank" rel="noopener noreferrer" class="text-teal-400 hover:text-teal-300 transition">ClinicStreams</a>
+              &amp;
+              <a href="https://aazhidigital.com" target="_blank" rel="noopener noreferrer" class="text-teal-400 hover:text-teal-300 transition">Aazhi Digital</a>
+            </p>
           </div>
         </footer>
 

@@ -62,23 +62,35 @@ function Footer() {
             </ul>
           </div>
 
-          {/* Support */}
+          {/* Partner Sites */}
           <div>
-            <h4 className="text-lg font-bold text-white mb-4">Support</h4>
+            <h4 className="text-lg font-bold text-white mb-4">Partner Sites</h4>
             <ul className="space-y-3 text-sm">
+              <li>
+                <a
+                  href="https://clinicstreams.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-400 hover:text-teal-400 transition flex items-center space-x-2"
+                >
+                  <span>🏥</span>
+                  <span>ClinicStreams</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://aazhidigital.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-400 hover:text-teal-400 transition flex items-center space-x-2"
+                >
+                  <span>💡</span>
+                  <span>Aazhi Digital</span>
+                </a>
+              </li>
               <li>
                 <a href="mailto:help@healthblog.com" className="text-gray-400 hover:text-teal-400 transition">
                   Help Center
-                </a>
-              </li>
-              <li>
-                <a href="mailto:privacy@healthblog.com" className="text-gray-400 hover:text-teal-400 transition">
-                  Report Content
-                </a>
-              </li>
-              <li>
-                <a href="mailto:feedback@healthblog.com" className="text-gray-400 hover:text-teal-400 transition">
-                  Send Feedback
                 </a>
               </li>
             </ul>
@@ -91,7 +103,11 @@ function Footer() {
         {/* Bottom Section */}
         <div className="flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm text-gray-500 mb-4 md:mb-0">
-            &copy; {currentYear} Health Blog. All rights reserved.
+            &copy; {currentYear} Health Blog by{' '}
+            <a href="https://clinicstreams.com" target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:text-teal-300 transition">ClinicStreams</a>
+            {' '}&amp;{' '}
+            <a href="https://aazhidigital.com" target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:text-teal-300 transition">Aazhi Digital</a>
+            . All rights reserved.
           </p>
           <div className="flex items-center space-x-1 text-xs text-gray-600">
             <span className="text-teal-500">⚕️</span>

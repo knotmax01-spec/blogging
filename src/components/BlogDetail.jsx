@@ -6,6 +6,7 @@ import { removeBlogFromManifest } from '../utils/blogManifest';
 import { downloadBlogAsHTML } from '../utils/staticSiteExporter';
 import { getImageMetadata, getImageData, deletePostImages } from '../utils/imageManager';
 import { validateComment } from '../utils/validation';
+import { blogAPI } from '../services/api';
 
 function BlogDetail() {
   const [post, setPost] = useState(null);
@@ -14,29 +15,46 @@ function BlogDetail() {
   const [rating, setRating] = useState(0);
   const [userName, setUserName] = useState('');
   const [postImages, setPostImages] = useState({});
+  const [notFound, setNotFound] = useState(false);
   const { id } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const posts = JSON.parse(localStorage.getItem('blog-posts') || '[]');
-    const foundPost = posts.find(p => p.id === Number(id));
-    setPost(foundPost);
+    const loadPost = async () => {
+      let foundPost = null;
 
-    // Load images for this post using new imageManager
-    const imageMetadata = getImageMetadata(Number(id)) || [];
-    const images = {};
-    imageMetadata.forEach(img => {
-      const dataUrl = getImageData(img.id);
-      images[img.id] = {
-        ...img,
-        dataUrl
-      };
-    });
-    setPostImages(images);
+      // Try server first
+      try {
+        foundPost = await blogAPI.getPostById(id);
+      } catch {
+        // Fallback to localStorage
+        const posts = JSON.parse(localStorage.getItem('blog-posts') || '[]');
+        foundPost = posts.find(p => p.id === Number(id)) || null;
+      }
 
-    // Load comments
-    const allComments = JSON.parse(localStorage.getItem('blog-comments') || '{}');
-    setComments(allComments[id] || []);
+      if (!foundPost) {
+        setNotFound(true);
+        return;
+      }
+
+      setPost(foundPost);
+
+      // Load images for this post
+      const postId = foundPost._id || Number(id);
+      const imageMetadata = getImageMetadata(Number(id)) || [];
+      const images = {};
+      imageMetadata.forEach(img => {
+        const dataUrl = getImageData(img.id);
+        images[img.id] = { ...img, dataUrl };
+      });
+      setPostImages(images);
+
+      // Load comments
+      const allComments = JSON.parse(localStorage.getItem('blog-comments') || '{}');
+      setComments(allComments[id] || []);
+    };
+
+    loadPost();
   }, [id]);
 
   const handleAddComment = () => {
@@ -115,7 +133,7 @@ function BlogDetail() {
     );
   };
 
-  if (!post) {
+  if (notFound) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center bg-gradient-to-br from-teal-50 to-cyan-50 p-12 rounded-2xl border-2 border-teal-200 border-dashed">
@@ -125,6 +143,14 @@ function BlogDetail() {
             ← Back to Dashboard
           </Link>
         </div>
+      </div>
+    );
+  }
+
+  if (!post) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-teal-200 border-t-teal-600"></div>
       </div>
     );
   }
