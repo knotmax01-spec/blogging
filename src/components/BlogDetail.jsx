@@ -15,34 +15,46 @@ function BlogDetail() {
   const [rating, setRating] = useState(0);
   const [userName, setUserName] = useState('');
   const [postImages, setPostImages] = useState({});
-  const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
   const { id } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const load = async () => {
-      setLoading(true);
+    const loadPost = async () => {
+      let foundPost = null;
+
+      // Try server first
       try {
-        const fetched = await blogAPI.getPostById(id);
-        setPost(fetched);
+        foundPost = await blogAPI.getPostById(id);
       } catch {
+        // Fallback to localStorage
         const posts = JSON.parse(localStorage.getItem('blog-posts') || '[]');
-        setPost(posts.find(p => p.id === Number(id)) || null);
-      } finally {
-        setLoading(false);
+        foundPost = posts.find(p => p.id === Number(id)) || null;
       }
 
+      if (!foundPost) {
+        setNotFound(true);
+        return;
+      }
+
+      setPost(foundPost);
+
+      // Load images for this post
+      const postId = foundPost._id || Number(id);
       const imageMetadata = getImageMetadata(Number(id)) || [];
       const images = {};
       imageMetadata.forEach(img => {
-        images[img.id] = { ...img, dataUrl: getImageData(img.id) };
+        const dataUrl = getImageData(img.id);
+        images[img.id] = { ...img, dataUrl };
       });
       setPostImages(images);
 
+      // Load comments
       const allComments = JSON.parse(localStorage.getItem('blog-comments') || '{}');
       setComments(allComments[id] || []);
     };
-    load();
+
+    loadPost();
   }, [id]);
 
   const handleAddComment = () => {
@@ -83,13 +95,21 @@ function BlogDetail() {
     );
   }
 
-  if (!post) {
+  if (notFound) {
     return (
       <div className="text-center py-20">
         <p className="text-gray-500 text-lg mb-4">Article not found.</p>
         <Link to="/" className="inline-flex items-center gap-2 text-teal-600 hover:underline font-semibold">
           <ArrowLeft size={16} /> Back to Dashboard
         </Link>
+      </div>
+    );
+  }
+
+  if (!post) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-teal-200 border-t-teal-600"></div>
       </div>
     );
   }
